@@ -1,0 +1,21 @@
+apiVersion: skaffold/v4beta12
+kind: Config
+metadata:
+  name: microservices-project-2
+build: 
+  local:
+    push: false
+    useDockerCLI: true
+  artifacts:
+    - image: gkibria121/auth 
+      context: ./auth
+      docker:
+        dockerfile: ../dockerfiles/Dockerfile 
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .
+manifests:
+  rawYaml:
+    - infra/k8s/auth.yml
+    - infra/k8s/ingress.yml

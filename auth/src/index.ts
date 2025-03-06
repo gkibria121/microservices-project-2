@@ -10,7 +10,7 @@ app.use(json())
 
 
 app.get('/api/auth/current-user',(req,res)=>{
-    res.status(200).send("hello world!")
+    res.status(200).send("update server on file change!")
 })
 
 app.listen(3000,()=>{
