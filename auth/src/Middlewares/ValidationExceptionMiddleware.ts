@@ -1,11 +1,11 @@
-import { NextFunction, Request, Response } from "express";  
+import { NextFunction, Request, Response } from "express";
 import { CustomError } from "../contracts/CustomErrorContract";
 export default function ValidationExceptionMiddleware(
   error: Error,
   req: Request,
   res: Response,
   next: NextFunction
-) :any{
+): any {
   // Check for CustomError instance
   if (error instanceof CustomError) {
     return res.status(error.statusCode).json(error.serializeErrors());
@@ -14,5 +14,5 @@ export default function ValidationExceptionMiddleware(
   console.error("Unhandled Error:", error);
 
   // Fallback for unhandled errors
-  res.status(500).json({ message: error.message});
+  res.status(500).json({ message: error.message });
 }
