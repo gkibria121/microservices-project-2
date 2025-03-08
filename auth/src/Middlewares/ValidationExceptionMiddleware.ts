@@ -14,5 +14,5 @@ export default function ValidationExceptionMiddleware(
   console.error("Unhandled Error:", error);
 
   // Fallback for unhandled errors
-  res.status(500).json({ message: "Something went wrong!" });
+  res.status(500).json({ message: error.message});
 }

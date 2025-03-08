@@ -18,7 +18,8 @@ router.post('/api/auth/signin',[
         if(!errors.isEmpty()){  
             throw new ValidationException(errors.array());
         }
-
+    
+  
     const existingUser = {
         id: randomBytes(10).toString('hex'),
         email : "gkibria121@gmail.com", 
@@ -29,10 +30,12 @@ router.post('/api/auth/signin',[
         process.env.JWT_KEY!
     );
 
-
+    req.session ={
+        jwt : token
+    }
 
     res.status(200).json({
-         jwt : token
+        
     })
 })
 router.post('/api/auth/signup',[
@@ -53,7 +56,28 @@ router.post('/api/auth/signup',[
     })
 })
 router.get('/api/auth/current-user',(req:Request,res:Response)=>{
-    res.status(200).send("update server on file change!")
+
+    try{ 
+        const currentUser = Jwt.verify(req.session?.jwt,process.env.JWT_KEY!);
+        res.status(200).json({
+            currentUser
+        }); 
+
+    }catch(error ){
+        throw new Error("Invalid session!")
+    }
+   
+    
+   
+})
+router.post('/api/auth/signout',(req:Request,res:Response):any=>{
+ 
+   req.session = null;
+   res.json({
+    message: "Successfully logged out!"
+   })
+    
+   
 })
 router.use(ValidationExceptionMiddleware)
 
