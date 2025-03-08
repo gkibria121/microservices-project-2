@@ -4,6 +4,7 @@ import ValidationExceptionMiddleware from "../Middlewares/ValidationExceptionMid
 import ValidationException from "../Exceptions/ValidationException";
 import {randomBytes} from 'crypto'
 import Jwt from 'jsonwebtoken'
+import AuthMiddleware from "../Middlewares/AuthMiddleware";
 const router = Router() 
 
 if(!process.env.JWT_KEY)
@@ -55,22 +56,15 @@ router.post('/api/auth/signup',[
         email,  
     })
 })
-router.get('/api/auth/current-user',(req:Request,res:Response)=>{
-
-    try{ 
-        const currentUser = Jwt.verify(req.session?.jwt,process.env.JWT_KEY!);
-        res.status(200).json({
-            currentUser
-        }); 
-
-    }catch(error ){
-        throw new Error("Invalid session!")
-    }
-   
-    
+router.get('/api/auth/current-user',AuthMiddleware,(req:Request,res:Response)=>{
+ 
+    const currentUser = req.user;
+    res.status(200).json({
+        currentUser
+    });  
    
 })
-router.post('/api/auth/signout',(req:Request,res:Response):any=>{
+router.post('/api/auth/signout',AuthMiddleware,(req:Request,res:Response):any=>{
  
    req.session = null;
    res.json({
