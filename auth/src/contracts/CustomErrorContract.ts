@@ -1,15 +1,13 @@
-interface ValidationError{
-    [tagname:string] : string[]
- }
+type ValidationError= Record<string,string[]>
 interface Errors {
     message : string,
-    errors?: ValidationError[]  ,
+    errors?: ValidationError   ,
 
 }
 
 abstract class CustomError extends Error {
     abstract   statusCode:number; 
-    abstract serializeErrors():Errors[]
+    abstract serializeErrors():Errors
 
 }
 
