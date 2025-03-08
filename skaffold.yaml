@@ -17,5 +17,4 @@ build:
             dest: .
 manifests:
   rawYaml:
-    - infra/k8s/auth.yml
-    - infra/k8s/ingress.yml
+    - infra/k8s/*

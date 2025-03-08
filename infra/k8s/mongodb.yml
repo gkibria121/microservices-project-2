@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-depl
+spec:
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+      - name: mongodb
+        image: mongo 
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m" 
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb
+spec: 
+  selector:
+    app: mongodb
+  ports:
+  - port: 27017
+    targetPort: 27017

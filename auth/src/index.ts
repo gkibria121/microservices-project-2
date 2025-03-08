@@ -2,9 +2,17 @@ import express from 'express'
 import { json } from 'express'
 import { apiRouter } from './routes/api'
 import cookieSession from 'cookie-session'
+import connectDB from './database/db'
 
 const app =express()
 
+try{
+    connectDB();
+}
+catch(error){
+    console.error(error)
+    process.exit()
+}
 
 app.use(json())
 app.set('trust proxy', 1) 

@@ -12,10 +12,12 @@
   "dependencies": {
     "@types/express": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.9",
+    "@types/mongoose": "^5.11.96",
     "cookie-session": "^2.1.0",
     "express": "^4.21.2",
     "express-validator": "^7.2.1",
     "jsonwebtoken": "^9.0.2",
+    "mongose": "^0.0.2-security",
     "nodemon": "^3.1.9",
     "ts-node-dev": "^2.0.0"
   },
