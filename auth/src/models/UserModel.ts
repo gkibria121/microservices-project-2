@@ -1,5 +1,6 @@
 import { Schema, model, models, Model, Document } from "mongoose";
 import bcrypt from "bcrypt";
+import Hash from "../utils/has";
 interface IUser extends Document {
   email: string;
   password: string;
@@ -15,7 +16,7 @@ const userSchema = new Schema<IUser, IUserModel>(
   {
     toJSON: {
       transform(doc, ret, options) {
-        ret.id = ret._id;
+        ret.id = String(ret._id).toString();
         delete ret._id;
         delete ret.password;
         delete ret.__v;
@@ -27,10 +28,7 @@ userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next(); // Only hash if password is modified
 
   try {
-    const saltRounds = 10;
-    this.password = await bcrypt.hash(this.password, saltRounds);
-
-    console.log(this.password);
+    this.password = Hash.make(this.password, 10);
     next();
   } catch (err) {
     next(err as Error);

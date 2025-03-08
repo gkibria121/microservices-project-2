@@ -7,6 +7,8 @@ import Jwt from "jsonwebtoken";
 import AuthMiddleware from "../Middlewares/AuthMiddleware";
 import User from "../models/UserModel";
 import "express-async-errors";
+import Hash from "../utils/has";
+import { makeValidationError } from "../helpers/helpers";
 const router = Router();
 
 if (!process.env.JWT_KEY) throw new Error("JWT key not found!");
@@ -21,18 +23,24 @@ router.post(
       .withMessage("Invalid email"),
     body("password").notEmpty().withMessage("passwod is empty"),
   ],
-  (req: Request, res: Response): any => {
+  async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       throw new ValidationException(errors.array());
     }
 
-    const existingUser = {
-      id: randomBytes(10).toString("hex"),
-      email: "gkibria121@gmail.com",
-    };
+    const { email, password } = req.body;
 
-    const token = Jwt.sign(existingUser, process.env.JWT_KEY!);
+    const existingUser = await User.findOne({ email: email });
+
+    if (!existingUser || !Hash.comapre(password, existingUser?.password))
+      throw new ValidationException([
+        makeValidationError("email", "Invalid credentials"),
+      ]);
+
+    console.log(existingUser.toJSON());
+
+    const token = Jwt.sign(existingUser.toJSON(), process.env.JWT_KEY!);
 
     req.session = {
       jwt: token,
