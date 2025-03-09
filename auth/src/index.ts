@@ -3,7 +3,9 @@ import { json } from "express";
 import { apiRouter } from "./routes/api";
 import cookieSession from "cookie-session";
 import connectDB from "./database/db";
+import dontenv from "dotenv";
 
+dontenv.config();
 const app = express();
 
 try {
