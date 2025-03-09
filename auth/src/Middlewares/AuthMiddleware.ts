@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import Jwt, { JwtPayload } from "jsonwebtoken";
+import AuthException from "../Exceptions/AuthException";
 
 declare global {
   namespace Express {
@@ -19,7 +20,7 @@ export default function AuthMiddleware(
 
     req.user = payload;
   } catch (error) {
-    throw new Error("User is not authenticated!");
+    throw new AuthException();
   }
   next();
 }

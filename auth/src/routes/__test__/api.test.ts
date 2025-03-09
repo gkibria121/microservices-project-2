@@ -1,4 +1,4 @@
-import { testLogin } from "../../helpers/test_helpers";
+import { testSignUp, testLogin } from "../../helpers/test_helpers";
 import { app } from "../../utils/app";
 import request from "supertest";
 
@@ -39,7 +39,7 @@ describe("Signin Route", () => {
   });
 
   it("should return 442 for incorrect email", async () => {
-    await testLogin();
+    await testSignUp();
     const response = await request(app).post("/api/auth/signin").send({
       email: "wrongemail@gmail.com",
       password: "testpassword",
@@ -48,7 +48,7 @@ describe("Signin Route", () => {
   });
 
   it("should return 442 for incorrect password", async () => {
-    await testLogin();
+    await testSignUp();
     const response = await request(app).post("/api/auth/signin").send({
       email: "gkibria121@gmail.com",
       password: "wrongpassword",
@@ -61,7 +61,7 @@ describe("Signin Route", () => {
       email: "gkibria121@gmail.com",
       password: "testpassword",
     };
-    await testLogin(credentials);
+    await testSignUp(credentials);
 
     const response = await request(app)
       .post("/api/auth/signin")
@@ -77,7 +77,7 @@ describe("Signin Route", () => {
       email: "gkibria121@gmail.com",
       password: "testpassword",
     };
-    await testLogin(credentials);
+    await testSignUp(credentials);
 
     const response = await request(app)
       .post("/api/auth/signin")
@@ -132,8 +132,31 @@ describe("Signup Route", () => {
 
 describe("Signout Route", () => {
   it("should clear the session cookie on signout", async () => {
-    await testLogin();
+    await testSignUp();
     const response = await request(app).post("/api/auth/signout");
     expect(response.get("Set-Cookie")).toBeUndefined();
+  });
+});
+
+describe("Proected Route check", () => {
+  it("Should return 403", async () => {
+    const response = await request(app).get("/api/auth/current-user");
+    expect(response.status).toBe(403);
+  });
+  it("should return the current user with id", async () => {
+    // Sign up a new user
+    await testSignUp();
+
+    // Log in to get the session cookie
+    const loginResponse = await testLogin();
+    const cookie = loginResponse.get("Set-Cookie") ?? [];
+
+    // Use the captured cookie to fetch the current user
+    const response = await request(app)
+      .get("/api/auth/current-user")
+      .set("Cookie", cookie);
+
+    expect(response.status).toBe(200);
+    expect(response.body.currentUser).toBeDefined();
   });
 });
