@@ -1,6 +1,5 @@
 import { Request, Response, Router } from "express";
 import { body, validationResult } from "express-validator";
-import ValidationExceptionMiddleware from "../Middlewares/ValidationExceptionMiddleware";
 import ValidationException from "../Exceptions/ValidationException";
 import { randomBytes } from "crypto";
 import Jwt from "jsonwebtoken";
@@ -9,6 +8,7 @@ import User from "../models/UserModel";
 import "express-async-errors";
 import Hash from "../utils/has";
 import { makeValidationError } from "../helpers/helpers";
+import ExceptionHandlerMiddleware from "../Middlewares/ExceptionHandlerMiddleware";
 const router = Router();
 
 if (!process.env.JWT_KEY) throw new Error("JWT key not found!");
@@ -38,15 +38,13 @@ router.post(
         makeValidationError("email", "Invalid credentials"),
       ]);
 
-    console.log(existingUser.toJSON());
-
     const token = Jwt.sign(existingUser.toJSON(), process.env.JWT_KEY!);
 
     req.session = {
       jwt: token,
     };
 
-    res.status(200).json({});
+    res.status(200).json({ user: existingUser });
   }
 );
 router.post(
@@ -112,5 +110,6 @@ router.post(
     });
   }
 );
-router.use(ValidationExceptionMiddleware);
+router.use(ExceptionHandlerMiddleware);
+
 export { router as apiRouter };
