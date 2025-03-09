@@ -1,6 +1,5 @@
 import { app } from "../../utils/app";
 import request from "supertest";
-
 describe("API Routes", () => {
   // Set up environment variables or other global setup here
   beforeAll(() => {
