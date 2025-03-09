@@ -42,7 +42,7 @@ router.post(
       jwt: token,
     };
 
-    res.status(200).json({ user: existingUser });
+    res.status(201).json({ user: existingUser });
   }
 );
 router.post(
@@ -83,7 +83,7 @@ router.post(
       password: password,
     });
 
-    res.status(200).json({
+    res.status(201).json({
       user,
     });
   }

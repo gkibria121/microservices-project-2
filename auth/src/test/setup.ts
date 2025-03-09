@@ -1,26 +1,22 @@
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
-import { beforeAll, afterAll } from "@jest/globals";
+import { beforeAll, afterAll, afterEach } from "@jest/globals";
 
-declare global {
-  namespace NodeJS {
-    interface Global {
-      testData?: {
-        user: string;
-        isActive: boolean;
-      };
-    }
-  }
-  // Or directly extend globalThis
-}
+let mongo: MongoMemoryServer;
 
-beforeAll(() => {
+beforeAll(async () => {
   console.log("🚀 Global Setup: Initializing resources...");
+  mongo = await MongoMemoryServer.create();
   process.env.JWT_KEY = "somerandomtxt";
-  global.testData = { user: "test-user", isActive: true };
+  await mongoose.connect(mongo.getUri());
 });
 
-afterAll(() => {
+afterEach(async () => {
+  await mongoose.connection.dropDatabase(); // Clear the database after each test
+});
+
+afterAll(async () => {
   console.log("🧹 Global Teardown: Cleaning up...");
-  delete global.testData;
+  await mongoose.disconnect();
+  if (mongo) await mongo.stop(); // Ensure final cleanup
 });
