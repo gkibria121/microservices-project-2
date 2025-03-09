@@ -4,6 +4,7 @@ import { apiRouter } from "./routes/api";
 import cookieSession from "cookie-session";
 import connectDB from "./database/db";
 import dontenv from "dotenv";
+import ExceptionHandlerMiddleware from "./Middlewares/ExceptionHandlerMiddleware";
 
 dontenv.config();
 const app = express();
