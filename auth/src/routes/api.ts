@@ -6,12 +6,10 @@ import Jwt from "jsonwebtoken";
 import AuthMiddleware from "../Middlewares/AuthMiddleware";
 import User from "../models/UserModel";
 import "express-async-errors";
-import Hash from "../utils/has";
+import Hash from "../services/hash";
 import { makeValidationError } from "../helpers/helpers";
 import ExceptionHandlerMiddleware from "../Middlewares/ExceptionHandlerMiddleware";
 const router = Router();
-
-if (!process.env.JWT_KEY) throw new Error("JWT key not found!");
 
 router.post(
   "/api/auth/signin",

@@ -1,6 +1,6 @@
 import { Schema, model, models, Model, Document } from "mongoose";
 import bcrypt from "bcrypt";
-import Hash from "../utils/has";
+import Hash from "../services/hash";
 interface IUser extends Document {
   email: string;
   password: string;
