@@ -15,6 +15,15 @@ build:
         manual:
           - src: 'src/**/*.ts'
             dest: .
+    - image: gkibria121/client 
+      context: ./client
+      docker:
+        dockerfile:  Dockerfile 
+       
+      sync:
+        manual:
+          - src: 'app/**/*.(ts)|(tsx)'
+            dest: .
 manifests:
   rawYaml:
     - infra/k8s/*
