@@ -22,7 +22,21 @@ build:
        
       sync:
         manual:
-          - src: 'app/**/*.(ts)|(tsx)'
+          - src: 'app/**/*.tsx' 
+            dest: .
+          - src: 'app/**/*.ts'
+            dest: .
+          - src: 'app/**/*.jsx' 
+            dest: .
+          - src: 'app/**/*.js'
+            dest: .
+          - src: 'src/**/*.tsx' 
+            dest: .
+          - src: 'src/**/*.ts'
+            dest: .
+          - src: 'src/**/*.jsx' 
+            dest: .
+          - src: 'src/**/*.js'
             dest: .
 manifests:
   rawYaml:
