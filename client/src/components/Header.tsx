@@ -7,7 +7,9 @@ function Header() {
   const { isAuth, setIsAuth } = useAuthContext();
   return (
     <nav className="flex justify-between bg-slate-200 py-2 px-4">
-      <div className="text-xl">GitTix</div>
+      <Link href={"/"} className="text-xl">
+        TickSell
+      </Link>
 
       {isAuth ? (
         <form className="flex gap-x-5">
@@ -19,12 +21,13 @@ function Header() {
           </button>
         </form>
       ) : (
-        <div
-          className="flex gap-x-5"
-          onClick={() => setIsAuth((prev) => !prev)}
-        >
-          <button className="text-xl text-blue-500">Sign UP</button>
-          <button className="text-xl text-blue-500">Sign In</button>
+        <div className="flex gap-x-5">
+          <Link href={"/signup"} className="text-xl text-blue-500">
+            Sign UP
+          </Link>
+          <Link href={"/signin"} className="text-xl text-blue-500">
+            Sign In
+          </Link>
         </div>
       )}
     </nav>
