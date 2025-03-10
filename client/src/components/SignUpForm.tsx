@@ -5,11 +5,13 @@ import FormGroup from "@/src/components/FormGroup";
 import Input from "@/src/components/Input";
 import Label from "@/src/components/Label";
 import React, { FormEvent, useState } from "react";
-import signUpAction from "../actions/signup";
-import ErrorMessage from "./ErrorMessage";
+import signUpAction from "@/src/actions/signup";
+import ErrorMessage from "@/src/components/ErrorMessage";
+import SuccessMsg from "@/src/components/SuccessMsg";
 
 function SignUpForm() {
   const [errors, setErrors] = useState<Record<string, string[]>>({});
+  const [success, setSuccess] = useState<string | null>(null);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -20,15 +22,18 @@ function SignUpForm() {
       if (result.errors) {
         setErrors(result.errors);
       } else {
-        console.log(result.message);
+        setErrors({});
+        setSuccess(result.message);
       }
     } catch (error: any) {
+      setSuccess(null);
       console.error("Unexpected error:", error);
     }
   }
 
   return (
     <form onSubmit={handleSubmit} className="mx-4 my-2" method="POST">
+      {success && <SuccessMsg>{success}</SuccessMsg>}
       <h1 className="text-2xl font-semibold mb-2">Sign Up</h1>
       <FormGroup>
         <Label htmlFor="email">Email Address</Label>
