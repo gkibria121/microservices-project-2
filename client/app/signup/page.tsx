@@ -1,10 +1,10 @@
-import SignUpForm from "@/src/components/SignUpForm";
+import AuthForm from "@/src/components/AuthForm";
 import React from "react";
 
 function page() {
   return (
     <div>
-      <SignUpForm mode="signup" />
+      <AuthForm mode="signup" />
     </div>
   );
 }

@@ -1,5 +1,5 @@
 // /client/app/signup/page.tsx
-import AuthForm from "@/src/components/SignUpForm";
+import AuthForm from "@/src/components/AuthForm";
 import React from "react";
 
 function page() {
