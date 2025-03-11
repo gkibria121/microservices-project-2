@@ -1,8 +1,4 @@
-export function signUp(formData: FormData) {
-  console.log(formData);
-}
 import { z } from "zod";
-import axios from "axios";
 import { AuthReturnType, ValidationErrors } from "../types/errors";
 import createAxios from "../utils/axios";
 import { headers } from "next/headers";
@@ -65,51 +61,29 @@ export function validateSignInData(formData: FormData): {
 export async function submitSignUpData(
   data: Record<string, unknown>
 ): Promise<AuthReturnType> {
-  try {
-    const reqHeaders = await headers();
+  const reqHeaders = await headers();
 
-    const customAxios = await createAxios({
-      headers: {
-        Host: reqHeaders.get("Host"),
-        ...reqHeaders,
-      },
-    });
-    const { data: resData } = await customAxios.post("/api/auth/signup", data);
-    return { message: "Successfully signed up!", data: resData };
-  } catch (err) {
-    if (axios.isAxiosError(err)) {
-      console.error("Axios error occurred:", err.response?.data);
-      return err.response?.data as AuthReturnType;
-    } else {
-      console.error("Non-Axios error:", err);
-      return { message: "An unexpected error occurred: " + err };
-    }
-  }
+  const customAxios = await createAxios({
+    headers: {
+      Host: reqHeaders.get("Host"),
+      ...reqHeaders,
+    },
+  });
+  const { data: resData } = await customAxios.post("/api/auth/signup", data);
+  return { message: "Successfully signed up!", data: resData };
 }
 // Sign Up Request to API
 export async function submitSignInData(
   data: Record<string, unknown>
 ): Promise<AuthReturnType> {
-  try {
-    const reqHeaders = await headers();
-    const customAxios = await createAxios({
-      headers: {
-        Host: reqHeaders.get("Host"),
-        ...reqHeaders,
-      },
-    });
-    const response = await customAxios.post("/api/auth/signin", data);
-    console.log(response.data);
-    return response?.data as AuthReturnType;
-  } catch (err) {
-    if (axios.isAxiosError(err)) {
-      console.error("Axios error occurred:", err.response?.data);
-      if (typeof err.response?.data !== "string")
-        return err.response?.data as AuthReturnType;
-      throw new Error("Unexpected error occured " + err);
-    } else {
-      console.error("Non-Axios error:", err);
-      return { message: "An unexpected error occurred: " + err, errors: {} };
-    }
-  }
+  const reqHeaders = await headers();
+  const customAxios = await createAxios({
+    headers: {
+      Host: reqHeaders.get("Host"),
+      ...reqHeaders,
+    },
+  });
+  const response = await customAxios.post("/api/auth/signin", data);
+  console.log(response.data);
+  return response?.data as AuthReturnType;
 }
