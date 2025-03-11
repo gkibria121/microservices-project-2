@@ -75,7 +75,6 @@ export async function submitSignUpData(
       },
     });
     const { data: resData } = await customAxios.post("/api/auth/signup", data);
-
     return { message: "Successfully signed up!", data: resData };
   } catch (err) {
     if (axios.isAxiosError(err)) {
@@ -93,7 +92,6 @@ export async function submitSignInData(
 ): Promise<AuthReturnType> {
   try {
     const reqHeaders = await headers();
-    console.log(...reqHeaders);
     const customAxios = await createAxios({
       headers: {
         Host: reqHeaders.get("Host"),
