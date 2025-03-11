@@ -40,8 +40,7 @@ function AuthForm({ mode }: AuthFormProps) {
       alert("Unexpected error" + error);
     }
 
-    if (mode === "signup") router.push("/signin");
-    else router.push("/");
+    if (mode === "login") router.push("/");
   }
 
   return (
