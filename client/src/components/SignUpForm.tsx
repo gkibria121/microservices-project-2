@@ -9,6 +9,7 @@ import signUpAction from "@/src/actions/signup";
 import loginAction from "@/src/actions/login";
 import ErrorMessage from "@/src/components/ErrorMessage";
 import SuccessMsg from "@/src/components/SuccessMsg";
+import { useRouter } from "next/navigation";
 
 interface AuthFormProps {
   mode: "signup" | "login";
@@ -17,7 +18,7 @@ interface AuthFormProps {
 function AuthForm({ mode }: AuthFormProps) {
   const [errors, setErrors] = useState<Record<string, string[]>>({});
   const [success, setSuccess] = useState<string | null>(null);
-
+  const router = useRouter();
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -38,6 +39,9 @@ function AuthForm({ mode }: AuthFormProps) {
       setErrors({});
       alert("Unexpected error" + error);
     }
+
+    if (mode === "signup") router.push("/signin");
+    else router.push("/");
   }
 
   return (
