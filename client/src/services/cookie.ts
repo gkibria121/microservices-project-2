@@ -1,5 +1,7 @@
 import { AxiosResponse } from "axios";
 import { Cookie } from "../types/cookie";
+import { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
+import { cookies } from "next/headers";
 
 export function getCookie(
   headers: AxiosResponse<any, any>["headers"],
@@ -56,4 +58,29 @@ function parseCookie(cookie: string): Cookie {
   });
 
   return cookieObj;
+}
+
+export async function setSessionCookie(
+  axiosHeader: AxiosResponse<any, any>["headers"]
+) {
+  const cookieStorage = await cookies();
+
+  // Extract the session cookie from headers
+  const sessionCookie = getCookie(axiosHeader, "session");
+
+  if (sessionCookie && sessionCookie.value) {
+    // Transform cookie to match Next.js expected format
+    const nextJsCookie: Partial<ResponseCookie> = {
+      ...sessionCookie.cookie,
+      sameSite: sessionCookie.cookie.sameSite?.toLowerCase() as
+        | "lax"
+        | "strict"
+        | "none"
+        | undefined,
+    };
+
+    cookieStorage.set("session", sessionCookie.value, nextJsCookie);
+  }
+
+  // Redirect after ensuring the cookie is set
 }
