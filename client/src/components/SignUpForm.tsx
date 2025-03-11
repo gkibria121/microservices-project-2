@@ -26,17 +26,17 @@ function AuthForm({ mode }: AuthFormProps) {
       const action = mode === "signup" ? signUpAction : loginAction;
       const result = await action(formData);
 
-      if (result.errors) {
+      if (result?.errors) {
         setSuccess(null);
         setErrors(result.errors);
       } else {
         setErrors({});
-        setSuccess(result.message);
+        setSuccess(JSON.stringify(result?.user ?? {}));
       }
     } catch (error: unknown) {
       setSuccess(null);
       setErrors({});
-      console.error("Unexpected error:", error);
+      alert("Unexpected error");
     }
   }
 

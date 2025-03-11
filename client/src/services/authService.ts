@@ -3,7 +3,13 @@ export function signUp(formData: FormData) {
 }
 import { z } from "zod";
 import axios from "axios";
-import { SignUpReturnType, ValidationErrors } from "../types/errors";
+import {
+  SignInReturnType,
+  SignUpReturnType,
+  ValidationErrors,
+} from "../types/errors";
+import createAxios from "../utils/axios";
+import { headers } from "next/headers";
 
 // Validation Schema
 const signUpSchema = z.object({
@@ -90,28 +96,26 @@ export async function submitSignUpData(
 // Sign Up Request to API
 export async function submitSignInData(
   data: Record<string, unknown>
-): Promise<SignUpReturnType> {
+): Promise<SignInReturnType> {
   try {
     console.log("Submitting to API");
+    const reqHeaders = await headers();
 
-    const response = await axios.post(
-      "http://ingress-nginx-controller.ingress-nginx.svc.cluster.local/api/auth/signin",
-      data,
-      {
-        headers: {
-          Host: "ticksell.dev",
-        },
-      }
-    );
-
-    return { message: "Successfully logged in!" };
+    const customAxios = await createAxios({
+      headers: reqHeaders,
+    });
+    const response = await customAxios.post("/api/auth/signin", data);
+    console.log(response.data);
+    return response?.data as SignInReturnType;
   } catch (err) {
     if (axios.isAxiosError(err)) {
       console.error("Axios error occurred:", err.response?.data);
-      return err.response?.data as SignUpReturnType;
+      if (typeof err.response?.data !== "string")
+        return err.response?.data as SignUpReturnType;
+      throw new Error("Unexpected error occured " + err);
     } else {
       console.error("Non-Axios error:", err);
-      return { message: "An unexpected error occurred: " + err };
+      return { message: "An unexpected error occurred: " + err, errors: {} };
     }
   }
 }

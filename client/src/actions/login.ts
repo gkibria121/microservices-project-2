@@ -1,11 +1,11 @@
 "use server";
 import { submitSignInData, validateSignInData } from "../services/authService";
-import { SignUpReturnType } from "../types/errors";
+import { SignInReturnType } from "../types/errors";
 
 // Main Sign Up Action
-export default async function signUpAction(
+export default async function signInAction(
   formData: FormData
-): Promise<SignUpReturnType> {
+): Promise<SignInReturnType> {
   const { success, data, errors } = validateSignInData(formData);
 
   if (!success) {
