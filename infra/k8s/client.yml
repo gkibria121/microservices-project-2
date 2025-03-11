@@ -15,10 +15,10 @@ spec:
       - name: client
         image: gkibria121/client
         imagePullPolicy: Never 
-        resources:
-          limits:
-            memory: "512Mi"
-            cpu: "500m" 
+        # resources:
+        #   limits:
+        #     memory: "512Mi"
+        #     cpu: "500m" 
 ---
 
 apiVersion: v1
