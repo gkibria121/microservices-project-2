@@ -2,6 +2,7 @@ import { z } from "zod";
 import { AuthReturnType, ValidationErrors } from "../types/errors";
 import createAxios from "../utils/axios";
 import { headers } from "next/headers";
+import { AxiosResponse } from "axios";
 
 // Validation Schema
 const signUpSchema = z.object({
@@ -62,7 +63,7 @@ export async function submitSignUpData(
   data: Record<string, unknown>
 ): Promise<AuthReturnType> {
   const reqHeaders = await headers();
-
+  console.log("this is in server");
   const customAxios = await createAxios({
     headers: {
       Host: reqHeaders.get("Host"),
@@ -75,7 +76,7 @@ export async function submitSignUpData(
 // Sign Up Request to API
 export async function submitSignInData(
   data: Record<string, unknown>
-): Promise<AuthReturnType> {
+): Promise<AxiosResponse> {
   const reqHeaders = await headers();
   const customAxios = await createAxios({
     headers: {
@@ -83,7 +84,8 @@ export async function submitSignInData(
       ...reqHeaders,
     },
   });
+
   const response = await customAxios.post("/api/auth/signin", data);
-  console.log(response.data);
-  return response?.data as AuthReturnType;
+
+  return response;
 }
