@@ -69,7 +69,10 @@ export async function submitSignUpData(
     const reqHeaders = await headers();
 
     const customAxios = await createAxios({
-      headers: reqHeaders,
+      headers: {
+        Host: reqHeaders.get("Host"),
+        ...reqHeaders,
+      },
     });
     const { data: resData } = await customAxios.post("/api/auth/signup", data);
 
@@ -90,9 +93,12 @@ export async function submitSignInData(
 ): Promise<AuthReturnType> {
   try {
     const reqHeaders = await headers();
-
+    console.log(...reqHeaders);
     const customAxios = await createAxios({
-      headers: reqHeaders,
+      headers: {
+        Host: reqHeaders.get("Host"),
+        ...reqHeaders,
+      },
     });
     const response = await customAxios.post("/api/auth/signin", data);
     console.log(response.data);
