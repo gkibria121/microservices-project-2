@@ -32,7 +32,7 @@ function AuthForm({ mode }: AuthFormProps) {
         setErrors(result.errors);
       } else {
         setErrors({});
-        setSuccess("Success fully logged in!");
+        // setSuccess("Success fully logged in!");
       }
     } catch (error: unknown) {
       setSuccess(null);
