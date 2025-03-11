@@ -9,7 +9,7 @@ function Input({
 }: {
   type?: InputType;
   name: string;
-  others?: any[];
+  others?: unknown[];
 }) {
   return (
     <input

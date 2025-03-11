@@ -36,6 +36,29 @@ export function validateSignUpData(formData: FormData): {
   return { success: true, data: result.data };
 }
 
+export function validateSignInData(formData: FormData): {
+  success: boolean;
+  data?: Record<string, unknown>;
+  errors?: ValidationErrors;
+} {
+  const errors = {} as ValidationErrors;
+
+  const result = signUpSchema.safeParse({
+    email: formData.get("email"),
+    password: formData.get("password"),
+  });
+
+  if (!result.success) {
+    result.error.errors.forEach((e) => {
+      const field = e.path[0] as string;
+      errors[field] = [e.message];
+    });
+
+    return { success: false, errors };
+  }
+
+  return { success: true, data: result.data };
+}
 // Sign Up Request to API
 export async function submitSignUpData(
   data: Record<string, unknown>
@@ -54,6 +77,34 @@ export async function submitSignUpData(
     );
 
     return { message: "Successfully signed up!" };
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      console.error("Axios error occurred:", err.response?.data);
+      return err.response?.data as SignUpReturnType;
+    } else {
+      console.error("Non-Axios error:", err);
+      return { message: "An unexpected error occurred: " + err };
+    }
+  }
+}
+// Sign Up Request to API
+export async function submitSignInData(
+  data: Record<string, unknown>
+): Promise<SignUpReturnType> {
+  try {
+    console.log("Submitting to API");
+
+    const response = await axios.post(
+      "http://ingress-nginx-controller.ingress-nginx.svc.cluster.local/api/auth/signin",
+      data,
+      {
+        headers: {
+          Host: "ticksell.dev",
+        },
+      }
+    );
+
+    return { message: "Successfully logged in!" };
   } catch (err) {
     if (axios.isAxiosError(err)) {
       console.error("Axios error occurred:", err.response?.data);

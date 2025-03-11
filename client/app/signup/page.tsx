@@ -4,7 +4,7 @@ import React from "react";
 function page() {
   return (
     <div>
-      <SignUpForm />
+      <SignUpForm mode="signup" />
     </div>
   );
 }
