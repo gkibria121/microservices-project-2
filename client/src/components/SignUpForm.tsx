@@ -31,12 +31,12 @@ function AuthForm({ mode }: AuthFormProps) {
         setErrors(result.errors);
       } else {
         setErrors({});
-        setSuccess(JSON.stringify(result?.user ?? {}));
+        setSuccess("Success fully logged in!");
       }
     } catch (error: unknown) {
       setSuccess(null);
       setErrors({});
-      alert("Unexpected error");
+      alert("Unexpected error" + error);
     }
   }
 

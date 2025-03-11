@@ -1,15 +1,8 @@
 export type ValidationErrors = Record<string, string[]>;
 
-export type SignUpReturnType = {
-  message: string;
-  errors?: ValidationErrors;
+export type AuthReturnType = {
+  user?: { id: string; email: string };
+  errors?: Record<string, string[]>;
+  message?: string;
+  data?: unknown;
 };
-
-export type SignInReturnType =
-  | {
-      user: {
-        id: string;
-        email: string;
-      };
-    }
-  | SignUpReturnType;

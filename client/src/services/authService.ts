@@ -3,11 +3,7 @@ export function signUp(formData: FormData) {
 }
 import { z } from "zod";
 import axios from "axios";
-import {
-  SignInReturnType,
-  SignUpReturnType,
-  ValidationErrors,
-} from "../types/errors";
+import { AuthReturnType, ValidationErrors } from "../types/errors";
 import createAxios from "../utils/axios";
 import { headers } from "next/headers";
 
@@ -68,25 +64,20 @@ export function validateSignInData(formData: FormData): {
 // Sign Up Request to API
 export async function submitSignUpData(
   data: Record<string, unknown>
-): Promise<SignUpReturnType> {
+): Promise<AuthReturnType> {
   try {
-    console.log("Submitting to API");
+    const reqHeaders = await headers();
 
-    const response = await axios.post(
-      "http://ingress-nginx-controller.ingress-nginx.svc.cluster.local/api/auth/signup",
-      data,
-      {
-        headers: {
-          Host: "ticksell.dev",
-        },
-      }
-    );
+    const customAxios = await createAxios({
+      headers: reqHeaders,
+    });
+    const { data: resData } = await customAxios.post("/api/auth/signup", data);
 
-    return { message: "Successfully signed up!" };
+    return { message: "Successfully signed up!", data: resData };
   } catch (err) {
     if (axios.isAxiosError(err)) {
       console.error("Axios error occurred:", err.response?.data);
-      return err.response?.data as SignUpReturnType;
+      return err.response?.data as AuthReturnType;
     } else {
       console.error("Non-Axios error:", err);
       return { message: "An unexpected error occurred: " + err };
@@ -96,9 +87,8 @@ export async function submitSignUpData(
 // Sign Up Request to API
 export async function submitSignInData(
   data: Record<string, unknown>
-): Promise<SignInReturnType> {
+): Promise<AuthReturnType> {
   try {
-    console.log("Submitting to API");
     const reqHeaders = await headers();
 
     const customAxios = await createAxios({
@@ -106,12 +96,12 @@ export async function submitSignInData(
     });
     const response = await customAxios.post("/api/auth/signin", data);
     console.log(response.data);
-    return response?.data as SignInReturnType;
+    return response?.data as AuthReturnType;
   } catch (err) {
     if (axios.isAxiosError(err)) {
       console.error("Axios error occurred:", err.response?.data);
       if (typeof err.response?.data !== "string")
-        return err.response?.data as SignUpReturnType;
+        return err.response?.data as AuthReturnType;
       throw new Error("Unexpected error occured " + err);
     } else {
       console.error("Non-Axios error:", err);
