@@ -91,8 +91,3 @@ export async function setCookie(
   const cookieStorage = await cookies();
   cookieStorage.set(...args);
 }
-
-export async function getCookie(name: string) {
-  const cookieStorage = await cookies();
-  return cookieStorage.get(name);
-}
