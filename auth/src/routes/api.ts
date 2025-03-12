@@ -1,15 +1,23 @@
 import { Request, Response, Router } from "express";
 import { body, validationResult } from "express-validator";
-import ValidationException from "../Exceptions/ValidationException";
-import { randomBytes } from "crypto";
+import { ValidationException } from "@_gktickets/common";
 import Jwt from "jsonwebtoken";
-import AuthMiddleware from "../Middlewares/AuthMiddleware";
+import { AuthMiddleware } from "@_gktickets/common";
 import User from "../models/UserModel";
 import "express-async-errors";
 import Hash from "../services/hash";
-import { makeValidationError } from "../helpers/helpers";
-import ExceptionHandlerMiddleware from "../Middlewares/ExceptionHandlerMiddleware";
+import { makeValidationError } from "@_gktickets/common";
+import { ExceptionHandlerMiddleware } from "@_gktickets/common";
 const router = Router();
+declare global {
+  namespace Express {
+    interface Request {
+      session?: {
+        jwt?: string;
+      };
+    }
+  }
+}
 
 router.post(
   "/api/auth/signin",
@@ -102,7 +110,7 @@ router.post(
   "/api/auth/signout",
   AuthMiddleware,
   (req: Request, res: Response): any => {
-    req.session = null;
+    delete req.session;
     res.json({
       message: "Successfully logged out!",
     });
