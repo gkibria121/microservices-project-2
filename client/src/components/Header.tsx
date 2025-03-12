@@ -2,9 +2,10 @@
 import Link from "next/link";
 import React from "react";
 import { useAuthContext } from "../contexts/AuthContext";
+import logoutAction from "../actions/logout";
 
 function Header() {
-  const { isAuth, setIsAuth } = useAuthContext();
+  const { isAuth } = useAuthContext();
   return (
     <nav className="flex justify-between bg-slate-200 py-2 px-4">
       <Link href={"/"} className="text-xl">
@@ -13,10 +14,7 @@ function Header() {
 
       {isAuth ? (
         <form className="flex gap-x-5">
-          <button
-            className="text-xl text-blue-500"
-            onClick={() => setIsAuth((prev) => !prev)}
-          >
+          <button className="text-xl text-blue-500" onClick={logoutAction}>
             Sign Out
           </button>
         </form>

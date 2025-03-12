@@ -91,3 +91,9 @@ export async function setCookie(
   const cookieStorage = await cookies();
   cookieStorage.set(...args);
 }
+export async function deleteCookie(
+  ...args: [key: string] | [options: Omit<ResponseCookie, "value" | "expires">]
+) {
+  const cookieStorage = await cookies();
+  cookieStorage.delete(...args);
+}
