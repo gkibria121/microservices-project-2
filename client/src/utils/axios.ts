@@ -1,13 +1,25 @@
 import axios from "axios";
-const createAxios = ({ headers }: { headers?: Record<string, unknown> }) => {
+import { headers } from "next/headers";
+import { getCookie } from "../services/cookie";
+const createAxios = async () => {
+  if (typeof window !== "undefined") {
+    return axios.create({
+      baseURL: "/",
+      withCredentials: true,
+    });
+  }
+
+  const reqHeaders = await headers();
+  const sessionCookie = await getCookie("session");
   const baseURL =
-    typeof window == "undefined"
-      ? "http://ingress-nginx-controller.ingress-nginx.svc.cluster.local"
-      : "/";
+    "http://ingress-nginx-controller.ingress-nginx.svc.cluster.local";
+
   return axios.create({
     baseURL: baseURL,
     headers: {
-      ...(headers as Record<string, unknown>),
+      Host: reqHeaders.get("Host"),
+      "Content-Type": "application/json",
+      Cookie: `session=${sessionCookie?.value}`, // ✅ Correct header for cookies
     },
   });
 };

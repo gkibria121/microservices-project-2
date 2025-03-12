@@ -1,6 +1,9 @@
 import { AxiosResponse } from "axios";
 import { Cookie } from "../types/cookie";
-import { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
+import {
+  RequestCookie,
+  ResponseCookie,
+} from "next/dist/compiled/@edge-runtime/cookies";
 import { cookies } from "next/headers";
 
 export function getCookieFromHeaders(
@@ -96,4 +99,9 @@ export async function deleteCookie(
 ) {
   const cookieStorage = await cookies();
   cookieStorage.delete(...args);
+}
+
+export async function getCookie(...args: [name: string] | [RequestCookie]) {
+  const cookieStorage = await cookies();
+  return cookieStorage.get(...args);
 }

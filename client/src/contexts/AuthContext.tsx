@@ -21,12 +21,15 @@ export default function AuthContextProvider({ children }: PropsWithChildren) {
   const [isAuth, setIsAuth] = useState(false);
   const [user, setUser] = useState<UserType>(null);
   const userString = getCookie("user");
+
   useEffect(() => {
     if (userString) {
       const user = JSON.parse(userString);
       setUser(user as UserType);
       setIsAuth(!!user);
     }
+    setUser(null);
+    setIsAuth(false);
   }, [userString]);
   return (
     <authContext.Provider value={{ isAuth, user }}>

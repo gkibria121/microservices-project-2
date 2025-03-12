@@ -13,11 +13,11 @@ function Header() {
       </Link>
 
       {isAuth ? (
-        <form className="flex gap-x-5">
+        <div className="flex gap-x-5">
           <button className="text-xl text-blue-500" onClick={logoutAction}>
             Sign Out
           </button>
-        </form>
+        </div>
       ) : (
         <div className="flex gap-x-5">
           <Link href={"/signup"} className="text-xl text-blue-500">

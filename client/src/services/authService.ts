@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { AuthReturnType, ValidationErrors } from "../types/errors";
 import createAxios from "../utils/axios";
-import { headers } from "next/headers";
 import { AxiosResponse } from "axios";
 
 // Validation Schema
@@ -62,14 +61,7 @@ export function validateSignInData(formData: FormData): {
 export async function submitSignUpData(
   data: Record<string, unknown>
 ): Promise<AuthReturnType> {
-  const reqHeaders = await headers();
-  console.log("this is in server");
-  const customAxios = await createAxios({
-    headers: {
-      Host: reqHeaders.get("Host"),
-      ...reqHeaders,
-    },
-  });
+  const customAxios = await createAxios();
   const { data: resData } = await customAxios.post("/api/auth/signup", data);
   return { message: "Successfully signed up!", data: resData };
 }
@@ -77,15 +69,16 @@ export async function submitSignUpData(
 export async function submitSignInData(
   data: Record<string, unknown>
 ): Promise<AxiosResponse> {
-  const reqHeaders = await headers();
-  const customAxios = await createAxios({
-    headers: {
-      Host: reqHeaders.get("Host"),
-      ...reqHeaders,
-    },
-  });
+  const customAxios = await createAxios();
 
   const response = await customAxios.post("/api/auth/signin", data);
 
+  return response;
+}
+
+export async function logout() {
+  const customAxios = await createAxios();
+  const response = await customAxios.post("/api/auth/signout");
+  console.log(response.data, " returned from there");
   return response;
 }
