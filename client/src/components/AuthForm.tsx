@@ -4,75 +4,52 @@ import Button from "@/src/components/Button";
 import FormGroup from "@/src/components/FormGroup";
 import Input from "@/src/components/Input";
 import Label from "@/src/components/Label";
-import React, { FormEvent, useState } from "react";
+import React, { useActionState } from "react";
 import signUpAction from "@/src/actions/signup";
 import loginAction from "@/src/actions/login";
 import ErrorMessage from "@/src/components/ErrorMessage";
 import SuccessMsg from "@/src/components/SuccessMsg";
-import { useRouter } from "next/navigation";
+import { AuthReturnType } from "../types/errors";
 
 interface AuthFormProps {
   mode: "signup" | "login";
 }
-
+const initialState = {
+  message: "",
+  errors: {},
+} as AuthReturnType;
 function AuthForm({ mode }: AuthFormProps) {
-  const [errors, setErrors] = useState<Record<string, string[]>>({});
-  const [success, setSuccess] = useState<string | null>(null);
-  const router = useRouter();
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-
-    try {
-      const action = mode === "signup" ? signUpAction : loginAction;
-      const result = await action(formData);
-
-      if (result?.errors) {
-        setSuccess(null);
-        setErrors(result.errors);
-      } else {
-        setErrors({});
-        // setSuccess("Success fully logged in!");
-      }
-    } catch (error: unknown) {
-      setSuccess(null);
-      setErrors({});
-      alert("Unexpected error" + error);
-    }
-
-    if (mode === "login") router.push("/");
-  }
-
+  const action = mode === "signup" ? signUpAction : loginAction;
+  const [state, formAction, pending] = useActionState(action, initialState);
+  console.log(state);
   return (
-    <form onSubmit={handleSubmit} className="mx-4 my-2" method="POST">
-      {success && <SuccessMsg>{success}</SuccessMsg>}
+    <form action={formAction} className="mx-4 my-2">
+      {state.success && <SuccessMsg>{state.success}</SuccessMsg>}
       <h1 className="text-2xl font-semibold mb-2">
         {mode === "signup" ? "Sign Up" : "Login"}
       </h1>
 
       <FormGroup>
         <Label htmlFor="email">Email Address</Label>
-        <Input name="email" type="text" />
-        {errors.email && <ErrorMessage>{errors.email[0]}</ErrorMessage>}
+        <Input name="email" type="text" defaultValue={state.formField?.email} />
+        {getFormFiledError(state, "email")}
       </FormGroup>
 
       <FormGroup>
         <Label htmlFor="password">Password</Label>
         <Input name="password" type="password" />
-        {errors.password && <ErrorMessage>{errors.password[0]}</ErrorMessage>}
+        {getFormFiledError(state, "password")}
       </FormGroup>
 
       {mode === "signup" && (
         <FormGroup>
           <Label htmlFor="confirmPassword">Confirm Password</Label>
           <Input name="confirmPassword" type="password" />
-          {errors.confirmPassword && (
-            <ErrorMessage>{errors.confirmPassword[0]}</ErrorMessage>
-          )}
+          {getFormFiledError(state, "confirmPassword")}
         </FormGroup>
       )}
 
-      <Button className="mt-2">
+      <Button className="mt-2" disabled={pending}>
         {mode === "signup" ? "Sign Up" : "Login"}
       </Button>
     </form>
@@ -80,3 +57,11 @@ function AuthForm({ mode }: AuthFormProps) {
 }
 
 export default AuthForm;
+
+function getFormFiledError(state: any, name: string) {
+  return (
+    state?.errors?.[name] && (
+      <ErrorMessage>{state?.errors?.[name][0]}</ErrorMessage>
+    )
+  );
+}

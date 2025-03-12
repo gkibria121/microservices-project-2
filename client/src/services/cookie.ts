@@ -3,7 +3,7 @@ import { Cookie } from "../types/cookie";
 import { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { cookies } from "next/headers";
 
-export function getCookie(
+export function getCookieFromHeaders(
   headers: AxiosResponse<any, any>["headers"],
   key: string
 ): Cookie | null {
@@ -63,10 +63,8 @@ function parseCookie(cookie: string): Cookie {
 export async function setSessionCookie(
   axiosHeader: AxiosResponse<any, any>["headers"]
 ) {
-  const cookieStorage = await cookies();
-
   // Extract the session cookie from headers
-  const sessionCookie = getCookie(axiosHeader, "session");
+  const sessionCookie = getCookieFromHeaders(axiosHeader, "session");
 
   if (sessionCookie && sessionCookie.value) {
     // Transform cookie to match Next.js expected format
@@ -78,9 +76,23 @@ export async function setSessionCookie(
         | "none"
         | undefined,
     };
-
+    const cookieStorage = await cookies();
     cookieStorage.set("session", sessionCookie.value, nextJsCookie);
   }
 
   // Redirect after ensuring the cookie is set
+}
+
+export async function setCookie(
+  ...args:
+    | [key: string, value: string, cookie?: Partial<ResponseCookie>]
+    | [options: ResponseCookie]
+) {
+  const cookieStorage = await cookies();
+  cookieStorage.set(...args);
+}
+
+export async function getCookie(name: string) {
+  const cookieStorage = await cookies();
+  return cookieStorage.get(name);
 }
