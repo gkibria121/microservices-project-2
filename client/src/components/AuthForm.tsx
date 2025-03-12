@@ -21,7 +21,7 @@ const initialState = {
 function AuthForm({ mode }: AuthFormProps) {
   const action = mode === "signup" ? signUpAction : loginAction;
   const [state, formAction, pending] = useActionState(action, initialState);
-  console.log(state);
+
   return (
     <form action={formAction} className="mx-4 my-2">
       {state.success && <SuccessMsg>{state.success}</SuccessMsg>}
