@@ -4,7 +4,7 @@ import { apiRouter } from "../routes/api";
 import cookieSession from "cookie-session";
 
 const app = express();
-
+if (!process.env.JWT_KEY) throw new Error("JWT key not found!");
 app.use(json());
 app.set("trust proxy", 1);
 app.use(

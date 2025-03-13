@@ -17,6 +17,33 @@ declare global {
   }
 }
 
+router.post(
+  "/api/tickets/create",
+  AuthMiddleware,
+  [
+    body("title").notEmpty().withMessage("Title is required"),
+    body("price")
+      .notEmpty()
+      .isFloat({ gt: 0 })
+      .withMessage("Price must be  greater then 0"),
+  ],
+
+  (req: Request, res: Response) => {
+    const validated = validationResult(req);
+    if (!validated.isEmpty()) {
+      throw new ValidationException(validated.array());
+    }
+    res.status(201).json({
+      message: "Ticket created!",
+      data: {
+        id: "",
+        title: "Random title",
+        price: "300$",
+      },
+    });
+  }
+);
+
 router.use(ExceptionHandlerMiddleware);
 
 export { router as apiRouter };

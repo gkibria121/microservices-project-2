@@ -11,6 +11,5 @@ try {
 }
 
 app.listen(3000, () => {
-  if (!process.env.JWT_KEY) throw new Error("JWT key not found!");
   console.log("Server listening on 3000!");
 });

@@ -7,7 +7,7 @@ let mongo: MongoMemoryServer;
 beforeAll(async () => {
   console.log("🚀 Global Setup: Initializing resources...");
   mongo = await MongoMemoryServer.create();
-  process.env.JWT_KEY = "somerandomtxt";
+  process.env.JWT_KEY = "asdf";
   await mongoose.connect(mongo.getUri());
 });
 
