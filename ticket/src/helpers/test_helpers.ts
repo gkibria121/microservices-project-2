@@ -1,5 +1,6 @@
 import request from "supertest";
 import { app } from "../utils/app";
+import { sign } from "jsonwebtoken";
 export async function testSignUp(
   credentials = {
     email: "gkibria121@gmail.com",
@@ -14,8 +15,10 @@ export function testLogin(
     password: "testpassword",
   }
 ) {
+  const jwt = sign(credentials, process.env.JWT_KEY!);
+
   const cookie = {
-    jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imh1d3VAbWFpbGluYXRvci5jb20iLCJpZCI6IjY3ZDJiODJlMmFhZWEzYzIxYjI3MTM2MyIsImlhdCI6MTc0MTg2Mjk2M30.o91ipakFbIS_X4ccEbxofGF23e9TeSIsHQ_IDDZAlQU",
+    jwt,
   };
 
   const cookieBase64 = Buffer.from(JSON.stringify(cookie)).toString("base64");
