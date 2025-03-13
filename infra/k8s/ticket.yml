@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ticket
+spec:
+  selector:
+    matchLabels:
+      app: ticket
+  template:
+    metadata:
+      labels:
+        app: ticket
+    spec:
+      containers:
+      - name: ticket
+        image: gkibria121/ticket
+        imagePullPolicy: Never
+        env:
+          - name: JWT_KEY
+            valueFrom: 
+              secretKeyRef:
+                name: jwt-secret
+                key: JWT_KEY 
+          - name: MONGO_URL 
+            value: "mongodb://mongodb-ticket:27017/ticket"
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m" 
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: ticket-service
+spec: 
+  selector:
+    app: ticket
+  ports:
+  - port: 3000
+    targetPort: 3000
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-ticket-depl
+spec:
+  selector:
+    matchLabels:
+      app: mongodb-ticket
+  template:
+    metadata:
+      labels:
+        app: mongodb-ticket
+    spec:
+      containers:
+      - name: mongodb
+        image: mongo 
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m" 
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-ticket
+spec: 
+  selector:
+    app: mongodb-ticket
+  ports:
+  - port: 27017
+    targetPort: 27017
