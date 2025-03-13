@@ -15,8 +15,7 @@ COPY package.json .
 RUN npm install  
 
 RUN apk update
-RUN apk add curl
-RUN  npm install  
+RUN apk add curl 
 COPY . .
 
 CMD [ "npm","run" ,"dev"]

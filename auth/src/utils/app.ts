@@ -2,6 +2,10 @@ import express from "express";
 import { json } from "express";
 import { apiRouter } from "../routes/api";
 import cookieSession from "cookie-session";
+import {
+  ExceptionHandlerMiddleware,
+  NotFoundException,
+} from "@_gktickets/common";
 
 const app = express();
 
@@ -16,7 +20,9 @@ app.use(
 );
 app.use(apiRouter);
 app.all("*", (req, res) => {
-  res.status(404).json({ message: "Api endpoint not found!" });
+  throw new NotFoundException();
 });
+
+app.use(ExceptionHandlerMiddleware);
 
 export { app };
