@@ -1,6 +1,7 @@
 import request from "supertest";
 import { app } from "../utils/app";
 import { sign } from "jsonwebtoken";
+import Ticket from "../models/Ticket";
 export async function testSignUp(
   credentials = {
     email: "gkibria121@gmail.com",
@@ -24,4 +25,14 @@ export function testLogin(
   const cookieBase64 = Buffer.from(JSON.stringify(cookie)).toString("base64");
 
   return [`session=${cookieBase64}`];
+}
+
+export async function createTicket() {
+  const ticket = {
+    title: "some title",
+    price: 100,
+  };
+  return await Ticket.create({
+    ...ticket,
+  });
 }
