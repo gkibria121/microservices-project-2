@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { body, validationResult } from "express-validator";
-import { ValidationException } from "@_gktickets/common";
+import { NotFoundException, ValidationException } from "@_gktickets/common";
 import Jwt from "jsonwebtoken";
 import { AuthMiddleware } from "@_gktickets/common";
 import User from "../models/UserModel";
@@ -106,6 +106,11 @@ router.get(
     });
   }
 );
+router.get("/api/auth/fuck", (req: Request, res: Response) => {
+  res.status(200).json({
+    okd: "ok",
+  });
+});
 router.post(
   "/api/auth/signout",
   AuthMiddleware,
@@ -116,5 +121,8 @@ router.post(
     });
   }
 );
+router.all("*", (req, res) => {
+  throw new NotFoundException();
+});
 
 export { router as apiRouter };

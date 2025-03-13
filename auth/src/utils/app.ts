@@ -19,9 +19,6 @@ app.use(
   })
 );
 app.use(apiRouter);
-app.all("*", (req, res) => {
-  throw new NotFoundException();
-});
 
 app.use(ExceptionHandlerMiddleware);
 
