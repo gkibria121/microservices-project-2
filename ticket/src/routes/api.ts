@@ -6,6 +6,7 @@ import { AuthMiddleware } from "@_gktickets/common";
 import "express-async-errors";
 import { makeValidationError } from "@_gktickets/common";
 import { ExceptionHandlerMiddleware } from "@_gktickets/common";
+import TicketModel from "../models/Ticket";
 const router = Router();
 declare global {
   namespace Express {
@@ -28,17 +29,20 @@ router.post(
       .withMessage("Price must be  greater then 0"),
   ],
 
-  (req: Request, res: Response) => {
+  async (req: Request, res: Response) => {
     const validated = validationResult(req);
     if (!validated.isEmpty()) {
       throw new ValidationException(validated.array());
     }
+    const { title, price } = req.body;
+    const Ticket = await TicketModel.create({
+      title,
+      price,
+    });
     res.status(201).json({
       message: "Ticket created!",
       data: {
-        id: "",
-        title: "Random title",
-        price: "300$",
+        ...Ticket.toJSON(),
       },
     });
   }
