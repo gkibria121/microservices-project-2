@@ -2,18 +2,12 @@ import request from "supertest";
 import { app } from "../utils/app";
 import { sign } from "jsonwebtoken";
 import Ticket from "../models/Ticket";
-export async function testSignUp(
-  credentials = {
-    email: "gkibria121@gmail.com",
-    password: "testpassword",
-  }
-) {
-  await request(app).post("/api/auth/signup").send(credentials);
-}
+import mongoose from "mongoose";
+
 export function testLogin(
   credentials = {
     email: "gkibria121@gmail.com",
-    password: "testpassword",
+    id: "randomId",
   }
 ) {
   const jwt = sign(credentials, process.env.JWT_KEY!);
@@ -27,10 +21,13 @@ export function testLogin(
   return [`session=${cookieBase64}`];
 }
 
-export async function createTicket() {
+export async function createTicket(
+  userId: string | any = new mongoose.mongo.ObjectId()
+) {
   const ticket = {
     title: "some title",
     price: 100,
+    userId: userId,
   };
   return await Ticket.create({
     ...ticket,

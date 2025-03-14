@@ -2,7 +2,11 @@ import { Request, Response, Router } from "express";
 import { body, validationResult } from "express-validator";
 import { ValidationException } from "@_gktickets/common";
 import Jwt from "jsonwebtoken";
-import { AuthMiddleware, NotFoundException } from "@_gktickets/common";
+import {
+  AuthMiddleware,
+  NotFoundException,
+  NotAuthorized,
+} from "@_gktickets/common";
 import "express-async-errors";
 import { makeValidationError } from "@_gktickets/common";
 import { ExceptionHandlerMiddleware } from "@_gktickets/common";
@@ -38,6 +42,7 @@ router.post(
     const Ticket = await TicketModel.create({
       title,
       price,
+      userId: req.user.id,
     });
     res.status(201).json({
       message: "Ticket created!",
@@ -91,7 +96,9 @@ router.put(
     if (!ticket) {
       throw new NotFoundException();
     }
-    if (ticket.userId !== req.user?.id) {
+
+    console.log(ticket.userId, req.user.id);
+    if (ticket.userId !== req.user.id) {
       throw new NotAuthorized();
     }
 

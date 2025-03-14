@@ -94,41 +94,69 @@ describe("Should get tickets", () => {
 describe("Should update ticket", () => {
   it("Shoult return 403 for different user", async () => {
     const id = (await createTicket())._id;
-    const response = await request(app).put(`/api/tickets/${id}`);
+    const response = await request(app)
+      .put(`/api/tickets/${id}`)
+      .set("Cookie", testLogin());
 
-    expect(response.statusCode).toBe(403);
+    expect(response.statusCode).toBe(401);
   });
   it("Shoult return 404 for   ticket not found", async () => {
-    const id = (await createTicket())._id;
-    const response = await request(app).put(`/api/tickets/${id}`);
-    console.log(id, response.body);
+    const credentials = { email: "some random mail", id: "12345" };
+    const id = new mongoose.mongo.ObjectId();
+
+    const response = await request(app)
+      .put(`/api/tickets/${id}`)
+      .set("Cookie", testLogin(credentials))
+      .send({
+        price: 100,
+        title: "test this",
+      });
+
     expect(response.statusCode).toBe(404);
   });
   it("Shoult return 442 for  invalid title", async () => {
-    const id = (await createTicket())._id;
-    const response = await request(app).put(`/api/tickets/${id}`).send({
-      price: 100,
-    });
+    const credentials = { email: "some random mail", id: "12345" };
+    const id = (await createTicket(credentials.id))._id;
+    const response = await request(app)
+      .put(`/api/tickets/${id}`)
+      .set("Cookie", testLogin(credentials))
+      .send({
+        price: 100,
+      });
     expect(response.statusCode).toBe(442);
   });
   it("Shoult return 442 for  invalid price", async () => {
-    const id = (await createTicket())._id;
-    const response = await request(app).put(`/api/tickets/${id}`).send({
-      title: "sometitle",
-    });
+    const credentials = { email: "some random mail", id: "12345" };
+    const id = (await createTicket(credentials.id))._id;
+    const response = await request(app)
+      .put(`/api/tickets/${id}`)
+      .set("Cookie", testLogin(credentials))
+      .send({
+        title: "sometitle",
+      });
     expect(response.statusCode).toBe(442);
   });
   it("Shoult return 442 for  invalid title and price", async () => {
-    const id = (await createTicket())._id;
-    const response = await request(app).put(`/api/tickets/${id}`);
+    const credentials = { email: "some random mail", id: "12345" };
+    const id = (await createTicket(credentials.id))._id;
+    const response = await request(app)
+      .put(`/api/tickets/${id}`)
+      .set("Cookie", testLogin(credentials));
     expect(response.statusCode).toBe(442);
   });
   it("Shoult return 200 for  ticket udpate", async () => {
-    const id = (await createTicket())._id;
-    const response = await request(app).put(`/api/tickets/${id}`).send({
+    const credentials = { email: "some random mail", id: "12345" };
+    const newTicket = {
       title: "updated title",
       price: 100,
-    });
+    };
+    const id = (await createTicket(credentials.id))._id;
+    const response = await request(app)
+      .put(`/api/tickets/${id}`)
+      .set("Cookie", testLogin(credentials))
+      .send(newTicket);
     expect(response.statusCode).toBe(200);
+    expect(response.body.title).toBe(newTicket.title);
+    expect(response.body.price).toBe(newTicket.price);
   });
 });

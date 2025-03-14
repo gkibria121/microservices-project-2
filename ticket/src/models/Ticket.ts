@@ -3,6 +3,7 @@ import mongoose, { model } from "mongoose";
 interface TicketDoc extends mongoose.Document {
   title: string;
   price: number;
+  userId: string;
 }
 
 const ticketSchema = new mongoose.Schema<TicketDoc>(
@@ -13,6 +14,10 @@ const ticketSchema = new mongoose.Schema<TicketDoc>(
     },
     price: {
       type: Number,
+      required: true,
+    },
+    userId: {
+      type: String,
       required: true,
     },
   },

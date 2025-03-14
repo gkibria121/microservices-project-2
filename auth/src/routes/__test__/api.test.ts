@@ -70,6 +70,7 @@ describe("Signin Route", () => {
     expect(response.status).toBe(201);
     expect(response.body.user.email).toBe(credentials.email);
     expect(response.body.user.id).toBeDefined();
+    expect(response.body.password).toBeUndefined();
   });
 
   it("should return a session cookie upon successful login", async () => {
