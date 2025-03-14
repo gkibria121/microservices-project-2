@@ -122,6 +122,26 @@ router.put(
   }
 );
 
+router.delete(
+  "/api/tickets/:id",
+  AuthMiddleware,
+  async (req: Request, res: Response) => {
+    const id = req.params.id;
+
+    const ticket = await TicketModel.findOne({ _id: id });
+
+    if (!ticket) {
+      throw new NotFoundException();
+    }
+
+    if (ticket.userId !== req.user.id) {
+      throw new NotAuthorized();
+    }
+    await ticket.deleteOne();
+    res.status(204).send();
+  }
+);
+
 router.use(ExceptionHandlerMiddleware);
 
 export { router as apiRouter };

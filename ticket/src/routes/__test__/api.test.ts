@@ -151,3 +151,38 @@ describe("Ticket Update API", () => {
     expect(response.body.price).toBe(newTicket.price);
   });
 });
+describe("Ticket Delete API", () => {
+  it("Should return 403 for unauthorized user", async () => {
+    const id = (await createTicket())._id;
+    const response = await request(app)
+      .delete(`/api/tickets/${id}`)
+      .set("Cookie", testLogin());
+
+    expect(response.statusCode).toBe(401);
+  });
+
+  it("Should return 404 for ticket not found", async () => {
+    const credentials = { email: "random@mail.com", id: "12345" };
+    const id = new mongoose.mongo.ObjectId();
+
+    const response = await request(app)
+      .delete(`/api/tickets/${id}`)
+      .set("Cookie", testLogin(credentials));
+
+    expect(response.statusCode).toBe(404);
+  });
+
+  it("Should delete ticket with user and ticket_id", async () => {
+    const credentials = { email: "random@mail.com", id: "12345" };
+    const id = (await createTicket(credentials.id))._id;
+    let tickets = (await Ticket.find({})).length;
+    expect(tickets).toBe(1);
+    const response = await request(app)
+      .delete(`/api/tickets/${id}`)
+      .set("Cookie", testLogin(credentials));
+
+    expect(response.statusCode).toBe(204);
+    tickets = (await Ticket.find({})).length;
+    expect(tickets).toBe(0);
+  });
+});
