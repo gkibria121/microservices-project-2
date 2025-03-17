@@ -79,6 +79,6 @@ export async function submitSignInData(
 export async function logout() {
   const customAxios = await createAxios();
   const response = await customAxios.post("/api/auth/signout");
-  console.log(response.data, " returned from there");
+
   return response;
 }

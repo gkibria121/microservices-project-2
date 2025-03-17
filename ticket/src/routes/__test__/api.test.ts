@@ -4,6 +4,8 @@ import { createTicket, testLogin } from "../../helpers/test_helpers";
 import Ticket from "../../models/Ticket";
 import mongoose from "mongoose";
 
+jest.mock("../../lib/natas-client");
+
 describe("Ticket Creation API", () => {
   it("Should return 401 for unauthenticated users", async () => {
     const response = await request(app).post("/api/tickets/create");
