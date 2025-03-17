@@ -12,6 +12,8 @@ import { makeValidationError } from "@_gktickets/common";
 import { ExceptionHandlerMiddleware } from "@_gktickets/common";
 import TicketModel from "../models/Ticket";
 import { natsWrapper } from "../lib/natas-client";
+import TicketUpdatedPublisher from "../events/publishers/ticket-updated-publisher";
+import TicketDeletedPublisher from "../events/publishers/ticket-deleted-publisher";
 const router = Router();
 declare global {
   namespace Express {
@@ -122,6 +124,12 @@ router.put(
 
     await ticket.save();
 
+    new TicketUpdatedPublisher(natsWrapper.client).publish({
+      id: ticket.id,
+      price: ticket.price,
+      title: ticket.title,
+    });
+
     res.json({
       ...ticket.toJSON(),
     });
@@ -143,7 +151,9 @@ router.delete(
     if (ticket.userId !== req.user.id) {
       throw new NotAuthorized();
     }
+
     await ticket.deleteOne();
+    new TicketDeletedPublisher(natsWrapper.client).publish(null);
     res.status(204).send();
   }
 );
