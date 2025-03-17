@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
 import { body, validationResult } from "express-validator";
 import { ValidationException } from "@_gktickets/common";
+import TicketCreatedPublisher from "./../events/publishers/ticket-created-publisher";
 import {
   AuthMiddleware,
   NotFoundException,
@@ -10,6 +11,7 @@ import "express-async-errors";
 import { makeValidationError } from "@_gktickets/common";
 import { ExceptionHandlerMiddleware } from "@_gktickets/common";
 import TicketModel from "../models/Ticket";
+import { natsWrapper } from "../lib/natas-client";
 const router = Router();
 declare global {
   namespace Express {
@@ -42,6 +44,11 @@ router.post(
       title,
       price,
       userId: req.user.id,
+    });
+    new TicketCreatedPublisher(natsWrapper.client).publish({
+      id: Ticket.id,
+      price: Ticket.price,
+      title: Ticket.title,
     });
     res.status(201).json({
       message: "Ticket created!",
