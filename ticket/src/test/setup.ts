@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import { beforeAll, afterAll, afterEach } from "@jest/globals";
 
 let mongo: MongoMemoryServer;
-
+jest.mock("../lib/natas-client");
 beforeAll(async () => {
   console.log("🚀 Global Setup: Initializing resources...");
   mongo = await MongoMemoryServer.create();
@@ -12,6 +12,7 @@ beforeAll(async () => {
 });
 
 afterEach(async () => {
+  jest.clearAllMocks();
   await mongoose.connection.dropDatabase(); // Clear the database after each test
 });
 

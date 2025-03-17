@@ -105,7 +105,6 @@ router.put(
       throw new NotFoundException();
     }
 
-    console.log(ticket.userId, req.user.id);
     if (ticket.userId !== req.user.id) {
       throw new NotAuthorized();
     }

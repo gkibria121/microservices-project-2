@@ -3,8 +3,7 @@ import { app } from "../../utils/app";
 import { createTicket, testLogin } from "../../helpers/test_helpers";
 import Ticket from "../../models/Ticket";
 import mongoose from "mongoose";
-
-jest.mock("../../lib/natas-client");
+import { natsWrapper } from "../../lib/natas-client";
 
 describe("Ticket Creation API", () => {
   it("Should return 401 for unauthenticated users", async () => {
@@ -186,5 +185,43 @@ describe("Ticket Delete API", () => {
     expect(response.statusCode).toBe(204);
     tickets = (await Ticket.find({})).length;
     expect(tickets).toBe(0);
+  });
+});
+
+describe("should have emitted events", () => {
+  it("should have called ticket created event!", async () => {
+    const credentials = { email: "random@mail.com", id: "12345" };
+    const newTicket = { title: "updated title", price: 100 };
+    const id = (await createTicket(credentials.id))._id;
+
+    const response = await request(app)
+      .put(`/api/tickets/${id}`)
+      .set("Cookie", testLogin(credentials))
+      .send(newTicket);
+
+    expect(natsWrapper.client.publish).toHaveBeenCalled();
+  });
+  it("should have called ticket updated event!", async () => {
+    const credentials = { email: "random@mail.com", id: "12345" };
+    const newTicket = { title: "updated title", price: 100 };
+    const id = (await createTicket(credentials.id))._id;
+
+    const response = await request(app)
+      .put(`/api/tickets/${id}`)
+      .set("Cookie", testLogin(credentials))
+      .send(newTicket);
+
+    expect(natsWrapper.client.publish).toHaveBeenCalled();
+  });
+  it("should have called ticket deleted event!", async () => {
+    const credentials = { email: "random@mail.com", id: "12345" };
+    const id = (await createTicket(credentials.id))._id;
+    let tickets = (await Ticket.find({})).length;
+    expect(tickets).toBe(1);
+    const response = await request(app)
+      .delete(`/api/tickets/${id}`)
+      .set("Cookie", testLogin(credentials));
+
+    expect(natsWrapper.client.publish).toHaveBeenCalled();
   });
 });
