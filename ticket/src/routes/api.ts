@@ -1,7 +1,6 @@
 import { Request, Response, Router } from "express";
 import { body, validationResult } from "express-validator";
 import { ValidationException } from "@_gktickets/common";
-import Jwt from "jsonwebtoken";
 import {
   AuthMiddleware,
   NotFoundException,
