@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order
+spec:
+  selector:
+    matchLabels:
+      app: order
+  template:
+    metadata:
+      labels:
+        app: order
+    spec:
+      containers:
+      - name: order
+        image: gkibria121/order
+        imagePullPolicy: Never
+        env:
+          - name: JWT_KEY
+            valueFrom: 
+              secretKeyRef:
+                name: jwt-secret
+                key: JWT_KEY 
+          - name: MONGO_URL 
+            value: "mongodb://mongodb-orders:27017/orders"
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m" 
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-service
+spec: 
+  selector:
+    app: order
+  ports:
+  - port: 3000
+    targetPort: 3000
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-order-depl
+spec:
+  selector:
+    matchLabels:
+      app: mongodb-orders
+  template:
+    metadata:
+      labels:
+        app: mongodb-orders
+    spec:
+      containers:
+      - name: mongodb
+        image: mongo 
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m" 
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-orders
+spec: 
+  selector:
+    app: mongodb-orders
+  ports:
+  - port: 27017
+    targetPort: 27017
