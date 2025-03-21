@@ -1,4 +1,5 @@
 import nats, { Stan } from "node-nats-streaming";
+import { randomBytes } from "crypto";
 class NatsWrapper {
   private _client?: Stan;
   get client() {
@@ -7,8 +8,9 @@ class NatsWrapper {
     return this._client;
   }
   public async connect(): Promise<void> {
-    this._client = nats.connect("nats-streaming", "1234", {
-      url: "http://nats-streaming-service:4222",
+    const id = randomBytes(10).toString("hex");
+    this._client = nats.connect(process.env.CLUSTER_ID!, id, {
+      url: process.env.NATS_URL,
     });
 
     return new Promise((resolve, reject) => {

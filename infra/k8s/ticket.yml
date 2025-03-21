@@ -23,6 +23,10 @@ spec:
                 key: JWT_KEY 
           - name: MONGO_URL 
             value: "mongodb://mongodb-ticket:27017/ticket"
+          - name: CLUSTER_ID 
+            value: "nats-streaming"
+          - name: NATS_URL 
+            value: "http://nats-streaming-service:4222"
         resources:
           limits:
             memory: "512Mi"
