@@ -20,7 +20,7 @@ if [ "$shouldPublish" = "yes" ]; then
   cd ..
 fi
 
-for dir in auth client ticket; do
+for dir in auth client ticket order; do
   cd "./$dir" || exit 1
   $removeCommand
   $command
