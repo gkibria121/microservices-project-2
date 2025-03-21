@@ -96,6 +96,10 @@ describe("Ticket Update API", () => {
     const id = (await createTicket())._id;
     const response = await request(app)
       .put(`/api/tickets/${id}`)
+      .send({
+        price: 10,
+        title: "random string",
+      })
       .set("Cookie", testLogin());
 
     expect(response.statusCode).toBe(401);

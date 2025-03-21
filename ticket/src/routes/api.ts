@@ -1,6 +1,9 @@
 import { Request, Response, Router } from "express";
 import { body, validationResult } from "express-validator";
-import { ValidationException } from "@_gktickets/common";
+import {
+  RequestValidatorMiddleware,
+  ValidationException,
+} from "@_gktickets/common";
 import TicketCreatedPublisher from "./../events/publishers/ticket-created-publisher";
 import {
   AuthMiddleware,
@@ -35,12 +38,9 @@ router.post(
       .isFloat({ gt: 0 })
       .withMessage("Price must be  greater then 0"),
   ],
+  RequestValidatorMiddleware,
 
   async (req: Request, res: Response) => {
-    const validated = validationResult(req);
-    if (!validated.isEmpty()) {
-      throw new ValidationException(validated.array());
-    }
     const { title, price } = req.body;
     const Ticket = await TicketModel.create({
       title,
@@ -96,6 +96,7 @@ router.put(
       .isFloat({ gt: 0 })
       .withMessage("Price must be greater then 0"),
   ],
+  RequestValidatorMiddleware,
   async (req: Request, res: Response) => {
     const id = req.params.id;
 
@@ -109,11 +110,6 @@ router.put(
       throw new NotAuthorized();
     }
 
-    const validated = validationResult(req);
-
-    if (!validated.isEmpty()) {
-      throw new ValidationException(validated.array());
-    }
     const { title, price } = req.body;
 
     ticket.set({
