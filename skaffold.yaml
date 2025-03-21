@@ -34,6 +34,15 @@ build:
             dest: .
           - src: 'src/**/*'
             dest: . 
+    - image: gkibria121/order 
+      context: ./order
+      docker:
+        dockerfile: ../dockerfiles/Dockerfile 
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .
+
 manifests:
   rawYaml:
     - infra/k8s/*
