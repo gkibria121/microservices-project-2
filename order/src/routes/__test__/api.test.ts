@@ -9,6 +9,7 @@ import {
 import mongoose from "mongoose";
 import Order from "../../models/Order";
 import { OrderStatus } from "@_gktickets/common";
+import { natsWrapper } from "../../lib/natas-client";
 
 describe("Order Creation API", () => {
   it("Should return 401 for unauthenticated users", async () => {
@@ -69,7 +70,21 @@ describe("Order Creation API", () => {
     expect(response.body.expiresAt).toBeDefined();
     expect(response.body.ticket).toBeDefined();
   });
-  it.todo("should have called ticket created event!");
+  it("should have called ticket created event!", async () => {
+    const ticket = await createTicket();
+    let orderCount = (await Order.find({})).length;
+    expect(orderCount).toBe(0);
+    const response = await request(app)
+      .post("/api/orders/create")
+      .send({
+        ticketId: ticket._id,
+      })
+      .set("Cookie", testLogin());
+    orderCount = (await Order.find({})).length;
+    expect(orderCount).toBe(1);
+    expect(response.statusCode).toBe(201);
+    expect(natsWrapper.client.publish).toHaveBeenCalled();
+  });
 });
 
 describe("Order Retrieval API", () => {
@@ -165,5 +180,18 @@ describe("Order Delete API", () => {
 
     expect(response.statusCode).toBe(204);
   });
-  it.todo("should have called ticket deleted event!");
+  it("should have called ticket deleted event!", async () => {
+    const credentials = {
+      email: "random@tmail.com",
+      id: "randomId",
+    };
+    const order = await createOrder(credentials.id);
+
+    const response = await request(app)
+      .delete("/api/orders/" + order._id)
+      .set("Cookie", testLogin(credentials));
+
+    expect(response.statusCode).toBe(204);
+    expect(natsWrapper.client.publish).toHaveBeenCalled();
+  });
 });

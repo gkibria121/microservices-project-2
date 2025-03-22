@@ -13,6 +13,11 @@ import "express-async-errors";
 import { ExceptionHandlerMiddleware } from "@_gktickets/common";
 import Order from "../models/Order";
 import Ticket from "../models/Ticket";
+import OrderCreatedPublisher from "../events/publishers/order-created-publisher";
+import { natsWrapper } from "../lib/natas-client";
+import OrderCancelledPublisher from "../events/publishers/order-cancelled-publisher";
+
+const ORDER_EXPIRATION_SECONDS = 60 * 60 * 24;
 
 const router = Router();
 declare global {
@@ -48,8 +53,20 @@ router.post(
     }
     const order = await Order.create({
       userId: req.user.id,
-      expiresAt: new Date().toString(),
+      expiresAt: new Date().getTime() + ORDER_EXPIRATION_SECONDS,
       ticket: ticket,
+    });
+
+    new OrderCreatedPublisher(natsWrapper.client).publish({
+      id: order.id,
+      expiresAt: order.expiresAt.toDateString(),
+      status: order.status,
+      userId: req.user.id,
+      ticket: {
+        id: ticket.id,
+        price: ticket.price,
+        title: ticket.title,
+      },
     });
     res.status(201).send(order);
   }
@@ -94,6 +111,13 @@ router.delete(
     if (order.userId !== req.user.id) throw new NotAuthorized();
     await order.updateOne({
       status: OrderStatus.Cancelled,
+    });
+
+    new OrderCancelledPublisher(natsWrapper.client).publish({
+      id: order.id,
+      ticket: {
+        id: order.ticket.id,
+      },
     });
     res.status(204).send();
   }
