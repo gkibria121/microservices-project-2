@@ -229,3 +229,37 @@ describe("should have emitted events", () => {
     expect(natsWrapper.client.publish).toHaveBeenCalled();
   });
 });
+
+describe("Implements optimistic concurrency control", () => {
+  it("Should return ticket with version key", async () => {
+    const ticketAttr = { title: "Ticket 1", price: 100 };
+
+    const response = await request(app)
+      .post("/api/tickets/create")
+      .send(ticketAttr)
+      .set("Cookie", testLogin());
+
+    expect(response.statusCode).toBe(201);
+    expect(response.body.data.version).toBeDefined();
+  });
+  it("Should return error while tring to save ticket with outdated version", async () => {
+    const ticket = await createTicket();
+
+    const firstInstance = await Ticket.findById(ticket._id);
+    const secondInstance = await Ticket.findById(ticket._id);
+
+    firstInstance?.set({
+      price: 10,
+    });
+    secondInstance?.set({
+      price: 10,
+    });
+    await firstInstance?.save();
+    try {
+      await secondInstance?.save();
+    } catch (e) {
+      return;
+    }
+    throw new Error("Version control did not work!");
+  });
+});
