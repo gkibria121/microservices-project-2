@@ -57,17 +57,22 @@ router.post(
       ticket: ticket,
     });
 
-    new OrderCreatedPublisher(natsWrapper.client).publish({
-      id: order.id,
-      expiresAt: order.expiresAt.toDateString(),
-      status: order.status,
-      userId: req.user.id,
-      ticket: {
-        id: ticket.id,
-        price: ticket.price,
-        title: ticket.title,
+    new OrderCreatedPublisher(natsWrapper.client).publish(
+      {
+        id: order.id,
+        expiresAt: order.expiresAt.toDateString(),
+        status: order.status,
+        userId: req.user.id,
+        ticket: {
+          id: ticket.id,
+          price: ticket.price,
+          title: ticket.title,
+        },
       },
-    });
+      () => {
+        console.log("OrderCreated published!");
+      }
+    );
     res.status(201).send(order);
   }
 );
@@ -113,12 +118,17 @@ router.delete(
       status: OrderStatus.Cancelled,
     });
 
-    new OrderCancelledPublisher(natsWrapper.client).publish({
-      id: order.id,
-      ticket: {
-        id: order.ticket.id,
+    new OrderCancelledPublisher(natsWrapper.client).publish(
+      {
+        id: order.id,
+        ticket: {
+          id: order.ticket.id,
+        },
       },
-    });
+      () => {
+        console.log("OrderCancelled published!");
+      }
+    );
     res.status(204).send();
   }
 );

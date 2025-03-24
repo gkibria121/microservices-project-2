@@ -47,11 +47,16 @@ router.post(
       price,
       userId: req.user.id,
     });
-    new TicketCreatedPublisher(natsWrapper.client).publish({
-      id: Ticket.id,
-      price: Ticket.price,
-      title: Ticket.title,
-    });
+    new TicketCreatedPublisher(natsWrapper.client).publish(
+      {
+        id: Ticket.id,
+        price: Ticket.price,
+        title: Ticket.title,
+      },
+      () => {
+        console.log("Ticket created published!");
+      }
+    );
     res.status(201).json({
       message: "Ticket created!",
       data: {
@@ -119,11 +124,16 @@ router.put(
 
     await ticket.save();
 
-    new TicketUpdatedPublisher(natsWrapper.client).publish({
-      id: ticket.id,
-      price: ticket.price,
-      title: ticket.title,
-    });
+    new TicketUpdatedPublisher(natsWrapper.client).publish(
+      {
+        id: ticket.id,
+        price: ticket.price,
+        title: ticket.title,
+      },
+      () => {
+        console.log("Ticket updated published!");
+      }
+    );
 
     res.json({
       ...ticket.toJSON(),
@@ -148,7 +158,9 @@ router.delete(
     }
 
     await ticket.deleteOne();
-    new TicketDeletedPublisher(natsWrapper.client).publish(null);
+    new TicketDeletedPublisher(natsWrapper.client).publish(null, () => {
+      console.log("Ticket deleted published!");
+    });
     res.status(204).send();
   }
 );

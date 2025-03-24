@@ -8,7 +8,7 @@ class TicketUpdatedListener extends Listener<TicketUpdatedEvent> {
     data: { id: string; title: string; price: number },
     msg: Message
   ): void {
-    console.log("Ticket updated!");
+    console.log(`Captured event ${msg.getSequence()} ${Subject.TicketUpdated}`);
     msg.ack();
   }
 }
