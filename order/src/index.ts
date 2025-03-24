@@ -2,9 +2,9 @@ import connectDB from "./database/db";
 import dontenv from "dotenv";
 import { app } from "./utils/app";
 import { connectNatsStreaming } from "./utils/functions";
-import { TicketCreatedListener } from "@_gktickets/common";
 import { natsWrapper } from "./lib/natas-client";
 import TicketUpdatedListener from "./events/listeners/ticket-updated-listener";
+import TicketCreatedListener from "./events/listeners/ticket-created-listener";
 dontenv.config();
 if (!process.env.JWT_KEY) throw new Error("JWT_key not found!");
 if (!process.env.MONGO_URL) throw new Error("MONGO_URL not found!");
@@ -25,7 +25,7 @@ try {
 }
 natsWrapper.client.on("connect", () => {
   console.log("connected");
-  new TicketCreatedListener(natsWrapper.client, "ticket-updated").listen();
+  new TicketCreatedListener(natsWrapper.client).listen();
   new TicketUpdatedListener(natsWrapper.client).listen();
 });
 
