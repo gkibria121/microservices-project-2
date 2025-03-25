@@ -1,9 +1,6 @@
 import { Request, Response, Router } from "express";
-import { body, validationResult } from "express-validator";
-import {
-  RequestValidatorMiddleware,
-  ValidationException,
-} from "@_gktickets/common";
+import { body } from "express-validator";
+import { RequestValidatorMiddleware } from "@_gktickets/common";
 import TicketCreatedPublisher from "./../events/publishers/ticket-created-publisher";
 import {
   AuthMiddleware,
@@ -11,7 +8,6 @@ import {
   NotAuthorized,
 } from "@_gktickets/common";
 import "express-async-errors";
-import { makeValidationError } from "@_gktickets/common";
 import { ExceptionHandlerMiddleware } from "@_gktickets/common";
 import TicketModel from "../models/Ticket";
 import { natsWrapper } from "../lib/natas-client";
@@ -53,6 +49,7 @@ router.post(
         price: Ticket.price,
         title: Ticket.title,
         userId: req.user.id,
+        version: Ticket.version,
       },
       () => {
         console.log("Ticket created published!");
@@ -131,6 +128,7 @@ router.put(
         price: ticket.price,
         title: ticket.title,
         userId: req.user.id,
+        version: ticket.version,
       },
       () => {
         console.log("Ticket updated published!");
