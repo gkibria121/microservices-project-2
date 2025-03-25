@@ -52,6 +52,7 @@ router.post(
         id: Ticket.id,
         price: Ticket.price,
         title: Ticket.title,
+        userId: req.user.id,
       },
       () => {
         console.log("Ticket created published!");
@@ -129,6 +130,7 @@ router.put(
         id: ticket.id,
         price: ticket.price,
         title: ticket.title,
+        userId: req.user.id,
       },
       () => {
         console.log("Ticket updated published!");
@@ -158,9 +160,12 @@ router.delete(
     }
 
     await ticket.deleteOne();
-    new TicketDeletedPublisher(natsWrapper.client).publish(null, () => {
-      console.log("Ticket deleted published!");
-    });
+    new TicketDeletedPublisher(natsWrapper.client).publish(
+      { id: ticket.id },
+      () => {
+        console.log("Ticket deleted published!");
+      }
+    );
     res.status(204).send();
   }
 );
