@@ -18,7 +18,7 @@ const setup = async (): Promise<{
     price: 10,
     title: "Updated Ticket",
     userId: ticket.userId,
-    version: ticket.version,
+    version: ticket.version + 1,
   };
 
   // @ts-ignore

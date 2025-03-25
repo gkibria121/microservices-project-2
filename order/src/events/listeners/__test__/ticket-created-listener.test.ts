@@ -45,7 +45,6 @@ it("Should create and save ticket", async () => {
 
 it("Should call ack ", async () => {
   const { data, msg, listener } = await setup();
-
   await listener.onMessage(data, msg);
   expect(msg.ack).toHaveBeenCalledTimes(1);
 });

@@ -14,7 +14,7 @@ class TicketUpdatedListener extends Listener<TicketUpdatedEvent> {
       const ticketAttr = { _id: data.id, title: data.title, price: data.price };
       const ticket = await Ticket.findOne({
         _id: data.id,
-        version: data.version,
+        version: data.version - 1,
       });
       if (!ticket) throw new Error("Ticket not found!");
 

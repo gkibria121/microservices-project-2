@@ -11,11 +11,9 @@ class TicketCreatedListener extends Listener<TicketCreatedEvent> {
   ): Promise<void> {
     console.log(`Captured event ${msg.getSequence()} ${Subject.TicketCreated}`);
 
-    try {
-      const ticketAttr = { _id: data.id, title: data.title, price: data.price };
-      await Ticket.create(ticketAttr);
-      msg.ack();
-    } catch (error) {}
+    const ticketAttr = { _id: data.id, title: data.title, price: data.price };
+    await Ticket.create(ticketAttr);
+    msg.ack();
   }
 }
 export default TicketCreatedListener;
