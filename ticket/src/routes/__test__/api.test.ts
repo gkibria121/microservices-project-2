@@ -262,4 +262,13 @@ describe("Implements optimistic concurrency control", () => {
     }
     throw new Error("Version control did not work!");
   });
+  it("Should update version while saving tickets", async () => {
+    const ticket = await createTicket();
+
+    expect(ticket.version).toBe(0);
+    await ticket.save();
+    expect(ticket.version).toBe(1);
+    await ticket.save();
+    expect(ticket.version).toBe(2);
+  });
 });
