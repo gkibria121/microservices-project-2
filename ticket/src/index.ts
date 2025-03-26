@@ -2,6 +2,9 @@ import connectDB from "./database/db";
 import dontenv from "dotenv";
 import { app } from "./utils/app";
 import { connectNatsStreaming } from "./utils/functions";
+import { natsWrapper } from "./lib/natas-client";
+import OrderCreatedListener from "./events/listeners/order-created-listener";
+import OrderCancelledListener from "./events/listeners/order-cancelled-listener";
 dontenv.config();
 if (!process.env.JWT_KEY) throw new Error("JWT_key not found!");
 if (!process.env.MONGO_URL) throw new Error("MONGO_URL not found!");
@@ -21,6 +24,10 @@ try {
   process.exit();
 }
 
+natsWrapper.client.on("connect", () => {
+  new OrderCreatedListener(natsWrapper.client).listen();
+  new OrderCancelledListener(natsWrapper.client).listen();
+});
 app.listen(3000, () => {
   console.log("Server listening on 3000!");
 });
