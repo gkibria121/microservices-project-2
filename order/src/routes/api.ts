@@ -38,7 +38,10 @@ router.post(
 
   async (req: Request, res: Response) => {
     const { ticketId } = req.body;
-    const existingOrder = await Order.findOne({ ticket: ticketId });
+    const existingOrder = await Order.findOne({
+      ticket: ticketId,
+      status: { $ne: OrderStatus.Cancelled },
+    });
     if (existingOrder) {
       throw new ValidationException([
         makeValidationError("ticketId", "Ticket is already reserved"),

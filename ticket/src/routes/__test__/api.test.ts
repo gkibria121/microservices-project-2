@@ -176,7 +176,7 @@ describe("Ticket Delete API", () => {
 
     expect(response.statusCode).toBe(404);
   });
-
+  it.todo("should return error if ticket is reserved!");
   it("Should delete ticket with user and ticket_id", async () => {
     const credentials = { email: "random@mail.com", id: "12345" };
     const id = (await createTicket(credentials.id))._id;

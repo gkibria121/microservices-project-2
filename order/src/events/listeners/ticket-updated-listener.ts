@@ -11,11 +11,17 @@ class TicketUpdatedListener extends Listener<TicketUpdatedEvent> {
   ): Promise<void> {
     console.log(`Captured event ${msg.getSequence()} ${Subject.TicketUpdated}`);
     try {
-      const ticketAttr = { _id: data.id, title: data.title, price: data.price };
+      const ticketAttr = {
+        _id: data.id,
+        title: data.title,
+        price: data.price,
+        version: data.version,
+      };
       const ticket = await Ticket.findOne({
         _id: data.id,
         version: data.version - 1,
       });
+
       if (!ticket) throw new Error("Ticket not found!");
 
       ticket.title = ticketAttr.title;

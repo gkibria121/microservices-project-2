@@ -1,7 +1,6 @@
 #!/bin/sh
 
-command="npm i @_gktickets/common"
-removeCommand="npm remove @_gktickets/common"
+command="npm update @_gktickets/common" 
 
 read -p "Should publish (yes/no): " shouldPublish
 
@@ -21,8 +20,7 @@ if [ "$shouldPublish" = "yes" ]; then
 fi
 
 for dir in auth client ticket order; do
-  cd "./$dir" || exit 1
-  $removeCommand
+  cd "./$dir" || exit 1 
   $command
   cd ..
 done
