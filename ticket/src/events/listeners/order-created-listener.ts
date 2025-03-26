@@ -20,18 +20,13 @@ class OrderCreatedListener extends Listener<OrderCreatedEvent> {
     if (!ticket) throw new Error("Ticket not found!");
     ticket.orderId = data.id;
     await ticket.save();
-    new TicketUpdatedPublisher(this.client).publish(
-      {
-        id: ticket.id,
-        title: ticket.title,
-        price: ticket.price,
-        userId: ticket.userId,
-        version: ticket.version,
-      },
-      () => {
-        console.log("Ticket updated event!");
-      }
-    );
+    new TicketUpdatedPublisher(this.client).publish({
+      id: ticket.id,
+      title: ticket.title,
+      price: ticket.price,
+      userId: ticket.userId,
+      version: ticket.version,
+    });
     msg.ack();
   }
 }

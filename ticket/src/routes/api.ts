@@ -43,18 +43,13 @@ router.post(
       price,
       userId: req.user.id,
     });
-    new TicketCreatedPublisher(natsWrapper.client).publish(
-      {
-        id: Ticket.id,
-        price: Ticket.price,
-        title: Ticket.title,
-        userId: req.user.id,
-        version: Ticket.version,
-      },
-      () => {
-        console.log("Ticket created published!");
-      }
-    );
+    new TicketCreatedPublisher(natsWrapper.client).publish({
+      id: Ticket.id,
+      price: Ticket.price,
+      title: Ticket.title,
+      userId: req.user.id,
+      version: Ticket.version,
+    });
     res.status(201).json({
       message: "Ticket created!",
       data: {
@@ -122,18 +117,13 @@ router.put(
 
     await ticket.save();
 
-    new TicketUpdatedPublisher(natsWrapper.client).publish(
-      {
-        id: ticket.id,
-        price: ticket.price,
-        title: ticket.title,
-        userId: req.user.id,
-        version: ticket.version,
-      },
-      () => {
-        console.log("Ticket updated published!");
-      }
-    );
+    new TicketUpdatedPublisher(natsWrapper.client).publish({
+      id: ticket.id,
+      price: ticket.price,
+      title: ticket.title,
+      userId: req.user.id,
+      version: ticket.version,
+    });
 
     res.json({
       ...ticket.toJSON(),
@@ -161,12 +151,7 @@ router.delete(
       throw new Error("Ticket id reserved!");
     }
     await ticket.deleteOne();
-    new TicketDeletedPublisher(natsWrapper.client).publish(
-      { id: ticket.id },
-      () => {
-        console.log("Ticket deleted published!");
-      }
-    );
+    new TicketDeletedPublisher(natsWrapper.client).publish({ id: ticket.id });
     res.status(204).send();
   }
 );
