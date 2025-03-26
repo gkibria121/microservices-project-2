@@ -1,6 +1,7 @@
 import mongoose, { model, Schema } from "mongoose";
 import { TicketDoc } from "./Ticket";
 import { OrderStatus } from "@_gktickets/common";
+import { updateIfCurrentPlugin } from "mongoose-update-if-current";
 interface OrderDoc extends mongoose.Document {
   userId: string;
   status: OrderStatus;
@@ -13,7 +14,7 @@ interface OrderModel extends mongoose.Model<OrderDoc> {
   expiresAt: Date;
   ticket: TicketDoc;
 }
-const ticketSchema = new Schema<OrderDoc, OrderModel>(
+const orderSchema = new Schema<OrderDoc, OrderModel>(
   {
     userId: {
       type: String,
@@ -42,5 +43,4 @@ const ticketSchema = new Schema<OrderDoc, OrderModel>(
     },
   }
 );
-
-export default model("Order", ticketSchema);
+export default model("Order", orderSchema);

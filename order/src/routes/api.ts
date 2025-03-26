@@ -116,6 +116,8 @@ router.delete(
     });
     if (!order) throw new NotFoundException();
     if (order.userId !== req.user.id) throw new NotAuthorized();
+    if (order.status === OrderStatus.Cancelled)
+      throw new Error("Order already cancelled!");
     await order.updateOne({
       status: OrderStatus.Cancelled,
     });
@@ -124,7 +126,8 @@ router.delete(
       {
         id: order.id,
         ticket: {
-          id: order.ticket.id,
+          id: order.ticket.id.toString("hex"),
+          version: order.ticket.version,
         },
       },
       () => {
