@@ -148,7 +148,7 @@ router.delete(
     }
 
     if (ticket.orderId) {
-      throw new Error("Ticket id reserved!");
+      throw new NotAuthorized("Ticket is reserved!");
     }
     await ticket.deleteOne();
     new TicketDeletedPublisher(natsWrapper.client).publish({ id: ticket.id });

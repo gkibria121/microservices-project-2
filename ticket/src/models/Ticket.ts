@@ -1,6 +1,6 @@
 import mongoose, { model } from "mongoose";
 import { updateIfCurrentPlugin } from "mongoose-update-if-current";
-interface TicketDoc extends mongoose.Document {
+export interface TicketDoc extends mongoose.Document {
   title: string;
   price: number;
   userId: string;

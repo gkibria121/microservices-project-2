@@ -15,6 +15,7 @@ class OrderCreatedListener extends Listener<OrderCreatedEvent> {
 
     const ticket = await Ticket.findOne({
       _id: data.ticket.id,
+      version: data.ticket.version,
     });
 
     if (!ticket) throw new Error("Ticket not found!");

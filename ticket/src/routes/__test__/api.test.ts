@@ -8,7 +8,7 @@ import { natsWrapper } from "../../lib/natas-client";
 describe("Ticket Creation API", () => {
   it("Should return 401 for unauthenticated users", async () => {
     const response = await request(app).post("/api/tickets/create");
-    expect(response.statusCode).toBe(403);
+    expect(response.statusCode).toBe(401);
   });
 
   it("Should allow authenticated users to create tickets", async () => {
@@ -102,7 +102,7 @@ describe("Ticket Update API", () => {
       })
       .set("Cookie", testLogin());
 
-    expect(response.statusCode).toBe(401);
+    expect(response.statusCode).toBe(403);
   });
 
   it("Should return 404 for ticket not found", async () => {
@@ -163,7 +163,7 @@ describe("Ticket Delete API", () => {
       .delete(`/api/tickets/${id}`)
       .set("Cookie", testLogin());
 
-    expect(response.statusCode).toBe(401);
+    expect(response.statusCode).toBe(403);
   });
 
   it("Should return 404 for ticket not found", async () => {
@@ -176,7 +176,23 @@ describe("Ticket Delete API", () => {
 
     expect(response.statusCode).toBe(404);
   });
-  it.todo("should return error if ticket is reserved!");
+  it("should return error if ticket is reserved!", async () => {
+    const credentials = { email: "random@mail.com", id: "12345" };
+    const id = (await createTicket(credentials.id))._id;
+    let tickets = (await Ticket.find({})).length;
+    await Ticket.updateOne(
+      { _id: id },
+      {
+        orderId: new mongoose.mongo.ObjectId(),
+      }
+    );
+
+    const response = await request(app)
+      .delete(`/api/tickets/${id}`)
+      .set("Cookie", testLogin(credentials));
+
+    expect(response.statusCode).toBe(403);
+  });
   it("Should delete ticket with user and ticket_id", async () => {
     const credentials = { email: "random@mail.com", id: "12345" };
     const id = (await createTicket(credentials.id))._id;
