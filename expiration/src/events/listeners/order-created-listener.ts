@@ -12,5 +12,6 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
   subject: Subject.OrderCreated = Subject.OrderCreated;
   onMessage(data: OrderCreatedEvent["data"], msg: Message): void {
     console.log("Message recieved: Order created!");
+    msg.ack();
   }
 }
