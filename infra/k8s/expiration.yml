@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: expiration
+spec:
+  selector:
+    matchLabels:
+      app: expiration
+  template:
+    metadata:
+      labels:
+        app: expiration
+    spec:
+      containers:
+      - name: expiration
+        image: gkibria121/expiration
+        imagePullPolicy: Never
+        env: 
+          - name: CLUSTER_ID 
+            value: "nats-streaming"
+          - name: NATS_URL 
+            value: "http://nats-streaming-service:4222"
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"  
