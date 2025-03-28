@@ -19,7 +19,7 @@ if [ "$shouldPublish" = "yes" ]; then
   cd ..
 fi
 
-for dir in auth client ticket order; do
+for dir in auth client ticket order expiration; do
   cd "./$dir" || exit 1 
   $rcommand
   $icommand
