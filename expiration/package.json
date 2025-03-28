@@ -12,6 +12,7 @@
   "description": "",
   "dependencies": {
     "@_gktickets/common": "^1.0.57",
+    "bull": "^4.16.5",
     "dotenv": "^16.4.7",
     "nodemon": "^3.1.9"
   },
