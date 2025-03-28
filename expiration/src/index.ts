@@ -2,7 +2,7 @@ import dontenv from "dotenv";
 import { connectNatsStreaming } from "./utils/functions";
 import { natsWrapper } from "./lib/natas-client";
 import { OrderCreatedListener } from "./events/listeners/order-created-listener";
-import bull from "./lib/bull";
+import Bull from "bull";
 dontenv.config();
 
 try {
@@ -12,10 +12,17 @@ try {
   process.exit();
 }
 
-if (!process.env.REDIS_HOST) throw new Error("Redis host is required!");
-
-if (!process.env.REDIS_PORT) throw new Error("Redis port is required");
 natsWrapper.client.on("connect", () => {
   console.log("Nats connected!");
   new OrderCreatedListener(natsWrapper.client).listen();
 });
+
+const testQueue = new Bull("test-queue", "redis://redis-srv:6379");
+
+testQueue.process((job, done) => {
+  console.log("processing job ", job.data);
+  done();
+});
+console.log("add to queue");
+
+testQueue.add({ message: "should be done" }, { delay: 100 });

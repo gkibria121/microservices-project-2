@@ -26,7 +26,7 @@ metadata:
   name: redis-srv
 spec: 
   selector:
-    app: redis-depl
+    app: redis
   ports:
   - port: 6379
     targetPort: 6379
