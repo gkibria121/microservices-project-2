@@ -1,10 +1,17 @@
 import Bull from "bull";
 import groupQueueName from "../events/group-name";
-const bull = new Bull(groupQueueName, {
-  redis: {
-    host: process.env!.REDIS_HOST,
-    port: Number(process.env!.REDIS_PORT),
-  },
-});
+import ExpirationCompletePublisher from "../events/publishers/expiration-complete-publisher";
+import { natsWrapper } from "./natas-client";
+const experationCompleteQueue = new Bull(
+  groupQueueName,
+  process.env.REDIS_HOST!
+);
 
-export default bull;
+experationCompleteQueue.process((job, done) => {
+  console.log("processing job ", job.data);
+  new ExpirationCompletePublisher(natsWrapper.client).publish({
+    id: job.data.orderId,
+  });
+  done();
+});
+export default experationCompleteQueue;

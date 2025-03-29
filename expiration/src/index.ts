@@ -12,17 +12,9 @@ try {
   process.exit();
 }
 
+if (!process.env.REDIS_HOST) throw new Error("REDIS_HOST is not set!");
+
 natsWrapper.client.on("connect", () => {
   console.log("Nats connected!");
   new OrderCreatedListener(natsWrapper.client).listen();
 });
-
-const testQueue = new Bull("test-queue", "redis://redis-srv:6379");
-
-testQueue.process((job, done) => {
-  console.log("processing job ", job.data);
-  done();
-});
-console.log("add to queue");
-
-testQueue.add({ message: "should be done" }, { delay: 100 });

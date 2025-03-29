@@ -21,6 +21,7 @@ class OrderCancelledListener extends Listener<OrderDeletedEvent> {
       _id: data.ticket.id,
       version: data.ticket.version,
     });
+
     if (!ticket) throw new Error("Ticket not found!");
 
     if (ticket.orderId?.toString() !== data.id)

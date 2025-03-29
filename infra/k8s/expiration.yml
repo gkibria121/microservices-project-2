@@ -21,9 +21,7 @@ spec:
           - name: NATS_URL 
             value: "http://nats-streaming-service:4222"
           - name: REDIS_HOST 
-            value: "http://redis-srv"
-          - name: REDIS_PORT 
-            value: "6379"
+            value: "redis://redis-srv:6379" 
         resources:
           limits:
             memory: "512Mi"

@@ -17,7 +17,7 @@ import OrderCreatedPublisher from "../events/publishers/order-created-publisher"
 import { natsWrapper } from "../lib/natas-client";
 import OrderCancelledPublisher from "../events/publishers/order-cancelled-publisher";
 
-const ORDER_EXPIRATION_SECONDS = 60 * 60 * 24;
+const ORDER_EXPIRATION_SECONDS = 60 * 5;
 
 const router = Router();
 declare global {
@@ -54,15 +54,16 @@ router.post(
     if (!ticket) {
       throw new NotFoundException();
     }
+    const expiresAt = new Date().getTime() + ORDER_EXPIRATION_SECONDS * 1000;
     const order = await Order.create({
       userId: req.user.id,
-      expiresAt: new Date().getTime() + ORDER_EXPIRATION_SECONDS,
+      expiresAt,
       ticket: ticket,
     });
 
     new OrderCreatedPublisher(natsWrapper.client).publish({
       id: order.id,
-      expiresAt: order.expiresAt.toDateString(),
+      expiresAt: order.expiresAt.toString(),
       status: order.status,
       userId: req.user.id,
       ticket: {
@@ -111,7 +112,7 @@ router.delete(
     const id = req.params.id;
     const order = await Order.findOne({
       _id: id,
-    });
+    }).populate("ticket");
     if (!order) throw new NotFoundException();
     if (order.userId !== req.user.id) throw new NotAuthorized();
     if (order.status === OrderStatus.Cancelled)
@@ -119,7 +120,6 @@ router.delete(
     await order.updateOne({
       status: OrderStatus.Cancelled,
     });
-
     new OrderCancelledPublisher(natsWrapper.client).publish({
       id: order.id,
       ticket: {
