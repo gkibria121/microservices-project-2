@@ -6,7 +6,7 @@ import {
 } from "@_gktickets/common";
 import { Message } from "node-nats-streaming";
 import groupQueueName from "../group-name";
-import OrderModel from "../../models/order";
+import OrderModel from "../../models/Order";
 
 export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
   groupQueueName: string = groupQueueName;

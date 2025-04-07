@@ -6,7 +6,7 @@ import {
 } from "@_gktickets/common";
 import { Message } from "node-nats-streaming";
 import groupQueueName from "../group-name";
-import OrderModel from "../../models/order";
+import OrderModel from "../../models/Order";
 
 class ExpirationCompleteListener extends Listener<ExpirationCompleteEvent> {
   subject: Subject.ExpirationComplete = Subject.ExpirationComplete;
