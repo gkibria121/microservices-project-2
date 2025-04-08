@@ -5,13 +5,10 @@ interface OrderDoc extends mongoose.Document {
   userId: string;
   status: OrderStatus;
   price: number;
+  version: number;
 }
-interface OrderModel extends mongoose.Model<OrderDoc> {
-  userId: String;
-  status: OrderStatus;
-  price: number;
-}
-const orderSchema = new Schema<OrderDoc, OrderModel>(
+
+const orderSchema = new Schema<OrderDoc>(
   {
     userId: {
       type: String,
@@ -37,4 +34,7 @@ const orderSchema = new Schema<OrderDoc, OrderModel>(
     },
   }
 );
+orderSchema.set("versionKey", "version");
+orderSchema.plugin(updateIfCurrentPlugin);
+
 export default model("Order", orderSchema);

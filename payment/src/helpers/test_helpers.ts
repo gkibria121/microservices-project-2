@@ -23,11 +23,13 @@ export function testLogin(
 }
 
 export async function createOrder(
-  userId: string | any = new mongoose.mongo.ObjectId()
+  options = {
+    userId: new mongoose.mongo.ObjectId(),
+    status: OrderStatus.Created,
+  }
 ) {
   return await Order.create({
-    userId,
-    status: OrderStatus.Created,
-    expiresAt: new Date().toString(),
+    ...options,
+    price: 100,
   });
 }

@@ -20,6 +20,7 @@ class ExpirationCompleteListener extends Listener<ExpirationCompleteEvent> {
       _id: data.id,
       version: data.version - 1,
     });
+
     if (!order) throw new Error("Order not found #" + data.id);
     if (order.status !== OrderStatus.Complete) {
       order.status = OrderStatus.Cancelled;
