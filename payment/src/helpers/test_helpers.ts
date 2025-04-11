@@ -23,13 +23,19 @@ export function testLogin(
 }
 
 export async function createOrder(
-  options = {
-    userId: new mongoose.mongo.ObjectId(),
-    status: OrderStatus.Created,
-  }
+  options?: Partial<{
+    userId: mongoose.Types.ObjectId;
+    status: OrderStatus;
+    price: number;
+  }>
 ) {
-  return await Order.create({
-    ...options,
+  const defaultOptions = {
+    userId: new mongoose.Types.ObjectId(),
+    status: OrderStatus.Created,
     price: 100,
-  });
+  };
+
+  const finalOptions = { ...defaultOptions, ...options };
+
+  return await Order.create(finalOptions);
 }
