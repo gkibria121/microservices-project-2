@@ -13,8 +13,8 @@ spec:
     spec:
       containers:
       - name: auth
-        image: gkibria121/auth
-        imagePullPolicy: Never
+        image: gkibria121/microservices-project-2-auth
+        # imagePullPolicy: Never
         env:
           - name: JWT_KEY
             valueFrom: 

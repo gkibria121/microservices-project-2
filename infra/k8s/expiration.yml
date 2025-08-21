@@ -13,8 +13,8 @@ spec:
     spec:
       containers:
       - name: expiration
-        image: gkibria121/expiration
-        imagePullPolicy: Never
+        image: gkibria121/microservices-project-2-expiration
+        # imagePullPolicy: Never
         env: 
           - name: CLUSTER_ID 
             value: "nats-streaming"

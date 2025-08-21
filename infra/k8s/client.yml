@@ -13,8 +13,8 @@ spec:
     spec:
       containers:
       - name: client
-        image: gkibria121/client
-        imagePullPolicy: Never 
+        image: gkibria121/microservices-project-2-client
+        # imagePullPolicy: Never 
         resources:
           requests:
               memory: "256Mi"
