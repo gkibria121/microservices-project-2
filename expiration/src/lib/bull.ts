@@ -11,6 +11,7 @@ experationCompleteQueue.process((job, done) => {
   console.log("processing job ", job.data);
   new ExpirationCompletePublisher(natsWrapper.client).publish({
     id: job.data.orderId,
+    version: job.data.version,
   });
   done();
 });

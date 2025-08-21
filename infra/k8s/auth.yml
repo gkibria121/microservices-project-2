@@ -24,6 +24,9 @@ spec:
           - name: MONGO_URL
             value: "mongodb://mongodb-auth:27017/auth"
         resources:
+          requests:
+              memory: "256Mi"
+              cpu: "500m" 
           limits:
             memory: "512Mi"
             cpu: "500m" 
@@ -59,6 +62,9 @@ spec:
       - name: mongodb
         image: mongo 
         resources:
+          requests:
+              memory: "256Mi"
+              cpu: "500m" 
           limits:
             memory: "512Mi"
             cpu: "500m" 

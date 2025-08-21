@@ -16,10 +16,10 @@ const userSchema = new Schema<IUser, IUserModel>(
   {
     toJSON: {
       transform(doc, ret, options) {
-        ret.id = String(ret._id).toString();
-        delete ret._id;
-        delete ret.password;
-        delete ret.__v;
+        ret.id = String(ret._id);
+        (ret as any)._id && delete (ret as any)._id;
+        (ret as any).password && delete (ret as any).password;
+        (ret as any).__v && delete (ret as any).__v;
       },
     },
   }

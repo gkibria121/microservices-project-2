@@ -23,6 +23,9 @@ spec:
           - name: REDIS_HOST 
             value: "redis://redis-srv:6379" 
         resources:
+          requests:
+              memory: "256Mi"
+              cpu: "500m" 
           limits:
             memory: "512Mi"
-            cpu: "500m"  
+            cpu: "500m" 

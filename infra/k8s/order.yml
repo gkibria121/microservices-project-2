@@ -28,6 +28,9 @@ spec:
           - name: NATS_URL 
             value: "http://nats-streaming-service:4222"
         resources:
+          requests:
+              memory: "256Mi"
+              cpu: "500m" 
           limits:
             memory: "512Mi"
             cpu: "500m" 
@@ -63,6 +66,9 @@ spec:
       - name: mongodb
         image: mongo 
         resources:
+          requests:
+              memory: "256Mi"
+              cpu: "500m" 
           limits:
             memory: "512Mi"
             cpu: "500m" 

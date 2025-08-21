@@ -37,6 +37,9 @@ spec:
           - "--max_msgs"
           - "100000"
         resources:
+          requests:
+              memory: "256Mi"
+              cpu: "500m" 
           limits:
             memory: "512Mi"
             cpu: "500m" 
