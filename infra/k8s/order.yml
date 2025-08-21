@@ -14,7 +14,7 @@ spec:
       containers:
       - name: order
         image: gkibria121/microservices-project-2-order
-        # imagePullPolicy: Never
+        # imagePullPolicy: IfNotPresent
         env:
           - name: JWT_KEY
             valueFrom: 
