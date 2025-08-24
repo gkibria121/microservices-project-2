@@ -17,7 +17,6 @@ RUN npm install
 RUN apk update
 RUN apk add curl 
 COPY . .
-
 CMD [ "npm","run" ,"dev"]
 
 
