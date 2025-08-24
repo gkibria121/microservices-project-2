@@ -4,7 +4,7 @@ metadata:
   name: microservices-project-2
 build: 
   local:
-    push: true
+    push: false
     useDockerCLI: true
   artifacts:
     - image: gkibria121/microservices-project-2-auth 
